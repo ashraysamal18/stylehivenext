@@ -1,0 +1,3 @@
+export default function ExplorePage() {
+  return <div className="card border-0 shadow-sm p-4 rounded-4"><h4 className="fw-bold">Explore Content</h4></div>;
+}
