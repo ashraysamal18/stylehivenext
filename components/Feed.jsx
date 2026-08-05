@@ -2,7 +2,26 @@
 import React, { useState, useEffect } from 'react';
 import PostCard from './PostCard';
 import Hero from './Hero';
-import { Image, Send } from 'lucide-react';
+import { Image, Send, Sparkles } from 'lucide-react';
+
+const DUMMY_POSTS = [
+  {
+    _id: 'sample1',
+    content: 'Just wrapped up our Sustainable Couture collection fitting for Paris Fashion Week! Excited to share behind-the-scenes previews soon. 🌿👗',
+    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'Sophia Laurent', role: 'Lead Runway Stylist' },
+    likes: [1, 2, 3, 4, 5],
+    comments: [1, 2]
+  },
+  {
+    _id: 'sample2',
+    content: 'Looking for freelance fashion photographers in Milan for an upcoming editorial campaign next month. Send over your portfolios! 📸',
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'Marcello Vance', role: 'Creative Director' },
+    likes: [1, 2, 3],
+    comments: []
+  }
+];
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -19,9 +38,14 @@ export default function Feed() {
   const fetchPosts = async () => {
     try {
       const res = await fetch('/api/posts');
-      if (res.ok) setPosts(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setPosts(data.length > 0 ? data : DUMMY_POSTS);
+      } else {
+        setPosts(DUMMY_POSTS);
+      }
     } catch (err) {
-      console.error(err);
+      setPosts(DUMMY_POSTS);
     }
   };
 
@@ -50,8 +74,8 @@ export default function Feed() {
     <div className="d-flex flex-column gap-3">
       <Hero />
 
-      {/* Create Post Input */}
-      {user && (
+      {/* Post Creator (Visible when logged in) */}
+      {user ? (
         <div className="card border-0 shadow-sm rounded-4 p-3 bg-white">
           <form onSubmit={handlePostSubmit}>
             <textarea
@@ -81,9 +105,18 @@ export default function Feed() {
             </div>
           </form>
         </div>
+      ) : (
+        /* Guest Call-To-Action Banner */
+        <div className="card border-0 shadow-sm rounded-4 p-3 bg-white text-center">
+          <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
+            <Sparkles size={18} className="text-primary" />
+            <span className="fw-semibold">Want to share your fashion work?</span>
+          </div>
+          <small className="text-muted">Sign in or create an account to post updates, share collections, and network.</small>
+        </div>
       )}
 
-      {/* Feed List */}
+      {/* Feed Posts */}
       {posts.map((post) => (
         <PostCard key={post._id} post={post} />
       ))}

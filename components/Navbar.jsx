@@ -1,23 +1,43 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { Home, Compass, Briefcase, Bell, MessageSquare, User, LogOut } from 'lucide-react';
-import AuthModal from './AuthModal';
+
+const AuthModal = dynamic(() => import('./AuthModal'), { ssr: false });
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  // Sync user state on initial load and handle auth updates
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const checkUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        setUser(null);
+      }
+    };
+
+    checkUser();
+
+    // Listen for custom login/logout events across components
+    window.addEventListener('storage', checkUser);
+    window.addEventListener('auth-change', checkUser);
+
+    return () => {
+      window.removeEventListener('storage', checkUser);
+      window.removeEventListener('auth-change', checkUser);
+    };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-    window.location.reload();
+    window.dispatchEvent(new Event('auth-change'));
   };
 
   return (
@@ -35,17 +55,25 @@ export default function Navbar() {
 
             {user ? (
               <div className="d-flex align-items-center gap-3">
-                <Link href="/profile" className="text-dark fw-bold text-decoration-none d-flex align-items-center gap-1"><User size={20} /> {user.name}</Link>
-                <button onClick={handleLogout} className="btn btn-outline-danger btn-sm rounded-pill d-flex align-items-center gap-1"><LogOut size={16} /> Logout</button>
+                <Link href="/profile" className="text-dark fw-bold text-decoration-none d-flex align-items-center gap-1">
+                  <User size={18} /> {user.name}
+                </Link>
+                <button onClick={handleLogout} className="btn btn-outline-danger btn-sm rounded-pill d-flex align-items-center gap-1">
+                  <LogOut size={16} /> Logout
+                </button>
               </div>
             ) : (
-              <button onClick={() => setShowAuthModal(true)} className="btn btn-primary rounded-pill px-4 fw-semibold btn-sm">Sign In</button>
+              <div className="d-flex align-items-center gap-2">
+                <button onClick={() => setShowAuthModal(true)} className="btn btn-primary rounded-pill px-4 fw-semibold btn-sm">
+                  Sign In
+                </button>
+              </div>
             )}
           </div>
         </div>
       </nav>
 
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      {showAuthModal && <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />}
     </>
   );
 }
