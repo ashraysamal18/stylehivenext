@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from '../../../lib/db';
+import connectDB from '../../../lib/db';
 import Post from '../../../lib/models/Post';
 import jwt from 'jsonwebtoken';
 

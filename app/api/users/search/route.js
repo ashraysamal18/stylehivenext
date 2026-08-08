@@ -1,0 +1,29 @@
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/db';
+import User from '@/lib/models/User';
+
+export async function GET(req) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const query = searchParams.get('q');
+
+    if (!query) {
+      return NextResponse.json([]);
+    }
+
+    // Search by name or username (case-insensitive)
+    const users = await User.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { username: { $regex: query, $options: 'i' } }
+      ]
+    })
+      .select('name username role avatar bio')
+      .limit(8);
+
+    return NextResponse.json(users);
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to search users' }, { status: 500 });
+  }
+}

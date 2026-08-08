@@ -3,7 +3,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Home, Compass, Briefcase, Bell, MessageSquare, User, LogOut } from 'lucide-react';
+import UserSearch from './UserSearch';
 
+// Inside your Navbar JSX layout:
+<div className="d-flex align-items-center gap-3">
+  <Link href="/" className="navbar-brand fw-bold text-primary fs-4 mb-0">StyleHive</Link>
+  <UserSearch />
+</div>
 const AuthModal = dynamic(() => import('./AuthModal'), { ssr: false });
 
 export default function Navbar() {
