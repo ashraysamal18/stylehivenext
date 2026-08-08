@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import PostCard from './PostCard';
 import Hero from './Hero';
-import { Image, Send, Sparkles } from 'lucide-react';
+import { Image, Send, Edit3 } from 'lucide-react';
 
 const DUMMY_POSTS = [
   {
@@ -72,21 +72,22 @@ export default function Feed() {
 
   return (
     <div className="d-flex flex-column gap-3">
+      {/* 1. HERO BANNER - RENDERED ONCE */}
       <Hero />
 
-      {/* Post Creator (Visible when logged in) */}
+      {/* 2. POST CREATOR - RENDERED ONCE */}
       {user ? (
         <div className="card border-0 shadow-sm rounded-4 p-3 bg-white">
           <form onSubmit={handlePostSubmit}>
             <textarea
               className="form-control border-0 bg-light rounded-3 p-3 mb-2"
-              rows={3}
+              rows={2}
               placeholder={`What's happening in fashion today, ${user.name}?`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               required
             ></textarea>
-            
+
             <input
               type="url"
               className="form-control form-control-sm border-0 bg-light rounded-3 px-3 py-2 mb-3"
@@ -99,24 +100,36 @@ export default function Feed() {
               <span className="text-muted small d-flex align-items-center gap-1">
                 <Image size={18} /> Add Media
               </span>
-              <button type="submit" className="btn btn-primary rounded-pill px-4 fw-bold btn-sm d-flex align-items-center gap-1">
+              <button
+                type="submit"
+                className="btn text-white rounded-pill px-4 fw-bold btn-sm d-flex align-items-center gap-1"
+                style={{ backgroundColor: '#8C533C' }}
+              >
                 <Send size={14} /> Post
               </button>
             </div>
           </form>
         </div>
       ) : (
-        /* Guest Call-To-Action Banner */
-        <div className="card border-0 shadow-sm rounded-4 p-3 bg-white text-center">
-          <div className="d-flex align-items-center justify-content-center gap-2 text-muted mb-1">
-            <Sparkles size={18} className="text-primary" />
-            <span className="fw-semibold">Want to share your fashion work?</span>
+        <div className="card border-0 shadow-sm rounded-4 p-3 bg-white d-flex flex-row align-items-center justify-content-between gap-3">
+          <div className="d-flex align-items-center gap-3">
+            <div className="p-3 rounded-circle d-flex align-items-center justify-content-center" style={{ backgroundColor: '#FAF8F5', color: '#8C533C' }}>
+              <Edit3 size={20} />
+            </div>
+            <div>
+              <h6 className="fw-bold mb-0 text-dark small">Want to share your fashion work?</h6>
+              <small className="text-muted" style={{ fontSize: '0.75rem' }}>
+                Sign in or create an account to post updates, share collections, and network with professionals.
+              </small>
+            </div>
           </div>
-          <small className="text-muted">Sign in or create an account to post updates, share collections, and network.</small>
+          <button className="btn text-white rounded-pill px-3 fw-bold btn-sm flex-shrink-0" style={{ backgroundColor: '#8C533C' }}>
+            Get Started ›
+          </button>
         </div>
       )}
 
-      {/* Feed Posts */}
+      {/* 3. POSTS LOOP - ONLY POST CARDS */}
       {posts.map((post) => (
         <PostCard key={post._id} post={post} />
       ))}

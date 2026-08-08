@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { User, Bookmark, Briefcase, Eye, Users, ShieldCheck } from 'lucide-react';
+import { Eye, Users, Bookmark, Briefcase, MessageSquare, Settings, Sparkles } from 'lucide-react';
 
 export default function SidebarLeft() {
   const [user, setUser] = useState(null);
@@ -9,19 +9,11 @@ export default function SidebarLeft() {
   useEffect(() => {
     const checkUser = () => {
       const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else {
-        setUser(null);
-      }
+      setUser(storedUser ? JSON.parse(storedUser) : null);
     };
-
     checkUser();
-
-    // Listen for sign-in / sign-out events from Navbar & AuthModal
     window.addEventListener('storage', checkUser);
     window.addEventListener('auth-change', checkUser);
-
     return () => {
       window.removeEventListener('storage', checkUser);
       window.removeEventListener('auth-change', checkUser);
@@ -30,74 +22,71 @@ export default function SidebarLeft() {
 
   return (
     <div className="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
-      {/* Cover Header Banner */}
+      {/* Warm Pattern Header */}
       <div 
-        className="bg-primary opacity-75" 
-        style={{ height: '64px', background: 'linear-gradient(135deg, #0d6efd 0%, #6610f2 100%)' }}
-      ></div>
+        style={{ 
+          height: '100px', 
+          background: 'linear-gradient(135deg, #8C533C 0%, #B8826D 100%)',
+          backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 50%)'
+        }} 
+      />
 
-      <div className="card-body pt-0 text-center position-relative">
+      <div className="card-body pt-0 text-center position-relative px-4">
         {/* Avatar */}
         <div 
-          className="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center mx-auto"
-          style={{ width: '72px', height: '72px', marginTop: '-36px', border: '3px solid white' }}
+          className="rounded-circle bg-white shadow-sm mx-auto d-flex align-items-center justify-content-center"
+          style={{ width: '84px', height: '84px', marginTop: '-42px', border: '4px solid white' }}
         >
           {user ? (
-            <div className="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center w-100 h-100 fs-4">
-              {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+            <div className="rounded-circle fw-bold d-flex align-items-center justify-content-center w-100 h-100 fs-3 text-white" style={{ background: '#8C533C' }}>
+              {user.name?.charAt(0).toUpperCase()}
             </div>
           ) : (
-            <User size={36} className="text-secondary" />
+            <div className="rounded-circle bg-light d-flex align-items-center justify-content-center w-100 h-100 text-secondary fs-3">
+              👤
+            </div>
           )}
         </div>
 
-        {/* User Details */}
-        {user ? (
-          <div className="mt-2">
-            <h6 className="fw-bold mb-0 text-dark d-flex align-items-center justify-content-center gap-1">
-              {user.name}
-              <ShieldCheck size={16} className="text-primary" />
-            </h6>
-            <span className="text-muted small d-block mb-2">
-              {user.role || 'Fashion Professional'}
-            </span>
-            <span className="badge bg-light text-dark border fw-normal mb-3">
-              {user.email}
-            </span>
-          </div>
-        ) : (
-          <div className="mt-2 mb-3">
-            <h6 className="fw-bold mb-0 text-dark">Guest User</h6>
-            <span className="text-muted small d-block">Fashion Community Member</span>
-          </div>
-        )}
+        {/* User Info */}
+        <h5 className="fw-bold mb-0 mt-3" style={{ color: '#2C221E' }}>{user ? user.name : 'Guest User'}</h5>
+        <p className="text-muted small mb-2">{user ? user.role : 'Fashion Community Member'}</p>
+        
+        <span className="badge rounded-pill px-3 py-1 mb-3" style={{ backgroundColor: '#F7EFEA', color: '#8C533C', fontSize: '0.75rem' }}>
+          ♦ {user ? `@${user.username}` : 'New Member'}
+        </span>
 
-        <hr className="my-2 text-muted opacity-25" />
-
-        {/* Stats Row */}
-        <div className="d-flex justify-content-between align-items-center py-1 text-start small">
-          <span className="text-muted d-flex align-items-center gap-1">
-            <Eye size={14} /> Profile Views
-          </span>
-          <span className="fw-bold text-primary">{user ? '1,284' : '128'}</span>
+        {/* Stats */}
+        <div className="d-flex justify-content-between text-start small mb-2">
+          <span className="text-muted d-flex align-items-center gap-2"><Eye size={16} /> Profile Views</span>
+          <span className="fw-bold" style={{ color: '#8C533C' }}>128</span>
         </div>
-        <div className="d-flex justify-content-between align-items-center py-1 text-start small">
-          <span className="text-muted d-flex align-items-center gap-1">
-            <Users size={14} /> Connections
-          </span>
-          <span className="fw-bold text-primary">{user ? '852' : '412'}</span>
+        <div className="d-flex justify-content-between text-start small mb-3">
+          <span className="text-muted d-flex align-items-center gap-2"><Users size={16} /> Connections</span>
+          <span className="fw-bold" style={{ color: '#8C533C' }}>412</span>
         </div>
 
-        <hr className="my-2 text-muted opacity-25" />
+        <hr style={{ borderColor: '#EFECE6' }} />
 
-        {/* Quick Links */}
-        <div className="d-flex flex-column gap-2 text-start small mt-2">
-          <Link href={user ? "/saved" : "#"} className="text-decoration-none text-secondary d-flex align-items-center gap-2 hover-primary">
-            <Bookmark size={15} /> Saved Items
-          </Link>
-          <Link href={user ? "/my-jobs" : "#"} className="text-decoration-none text-secondary d-flex align-items-center gap-2 hover-primary">
-            <Briefcase size={15} /> My Job Applications
-          </Link>
+        {/* Navigation */}
+        <div className="d-flex flex-column gap-2 text-start small my-3">
+          <Link href="/saved" className="text-decoration-none d-flex align-items-center gap-2 text-secondary py-1"><Bookmark size={16} /> Saved Items</Link>
+          <Link href="/my-jobs" className="text-decoration-none d-flex align-items-center gap-2 text-secondary py-1"><Briefcase size={16} /> My Job Applications</Link>
+          <Link href="/messages" className="text-decoration-none d-flex align-items-center gap-2 text-secondary py-1"><MessageSquare size={16} /> Message Center</Link>
+          <Link href="/settings" className="text-decoration-none d-flex align-items-center gap-2 text-secondary py-1"><Settings size={16} /> Settings</Link>
+        </div>
+
+        {/* Profile Completion Card */}
+        <div className="p-3 rounded-3 text-start" style={{ backgroundColor: '#FAF8F5' }}>
+          <button className="btn w-100 text-white rounded-3 fw-bold py-2 mb-2" style={{ backgroundColor: '#8C533C' }}>
+            Complete Your Profile
+          </button>
+          <div className="d-flex justify-content-between align-items-center text-muted" style={{ fontSize: '0.75rem' }}>
+            <span>80% completed</span>
+          </div>
+          <div className="progress mt-1" style={{ height: '6px', backgroundColor: '#EFECE6' }}>
+            <div className="progress-bar rounded-pill" style={{ width: '80%', backgroundColor: '#8C533C' }}></div>
+          </div>
         </div>
       </div>
     </div>

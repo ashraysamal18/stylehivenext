@@ -1,85 +1,85 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-import { Home, Compass, Briefcase, Bell, MessageSquare, User, LogOut } from 'lucide-react';
 import UserSearch from './UserSearch';
-
-// Inside your Navbar JSX layout:
-<div className="d-flex align-items-center gap-3">
-  <Link href="/" className="navbar-brand fw-bold text-primary fs-4 mb-0">StyleHive</Link>
-  <UserSearch />
-</div>
-const AuthModal = dynamic(() => import('./AuthModal'), { ssr: false });
+import AuthModal from './AuthModal';
+import { Home, Compass, Briefcase, Bell, MessageSquare, LogOut, User } from 'lucide-react';
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-  // Sync user state on initial load and handle auth updates
   useEffect(() => {
     const checkUser = () => {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else {
-        setUser(null);
-      }
+      const stored = localStorage.getItem('user');
+      setUser(stored ? JSON.parse(stored) : null);
     };
-
     checkUser();
-
-    // Listen for custom login/logout events across components
-    window.addEventListener('storage', checkUser);
     window.addEventListener('auth-change', checkUser);
-
-    return () => {
-      window.removeEventListener('storage', checkUser);
-      window.removeEventListener('auth-change', checkUser);
-    };
+    return () => window.removeEventListener('auth-change', checkUser);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setUser(null);
     window.dispatchEvent(new Event('auth-change'));
   };
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top py-2 px-lg-5">
-        <div className="container-fluid">
-          <Link href="/" className="navbar-brand fw-bold text-primary fs-4">StyleHive</Link>
+      <nav className="navbar navbar-expand-lg sticky-top bg-white border-bottom py-2 px-3 px-md-5" style={{ borderColor: '#EFECE6' }}>
+        <div className="container-fluid d-flex align-items-center justify-content-between">
           
-          <div className="d-flex align-items-center gap-4">
-            <Link href="/" className="text-secondary text-decoration-none d-flex align-items-center gap-1"><Home size={20} /> <span className="d-none d-md-inline">Feed</span></Link>
-            <Link href="/explore" className="text-secondary text-decoration-none d-flex align-items-center gap-1"><Compass size={20} /> <span className="d-none d-md-inline">Explore</span></Link>
-            <Link href="/jobs" className="text-secondary text-decoration-none d-flex align-items-center gap-1"><Briefcase size={20} /> <span className="d-none d-md-inline">Jobs</span></Link>
-            <Link href="/notifications" className="text-secondary text-decoration-none d-flex align-items-center gap-1"><Bell size={20} /> <span className="d-none d-md-inline">Notifications</span></Link>
-            <Link href="/messages" className="text-secondary text-decoration-none d-flex align-items-center gap-1"><MessageSquare size={20} /> <span className="d-none d-md-inline">Messages</span></Link>
+          {/* Logo & Search */}
+          <div className="d-flex align-items-center gap-3">
+            <Link href="/" className="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+              <span className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-6" style={{ width: '36px', height: '36px', backgroundColor: '#8C533C' }}>
+                SH
+              </span>
+              <span className="fw-serif fs-4 fw-bold" style={{ color: '#2C221E', fontFamily: 'Georgia, serif' }}>
+                StyleHive
+              </span>
+            </Link>
+            <UserSearch />
+          </div>
 
+          {/* Navigation Items */}
+          <div className="d-flex align-items-center gap-4">
+            <Link href="/" className="d-flex align-items-center gap-1 text-decoration-none fw-semibold border-bottom border-2 pb-1" style={{ color: '#8C533C', borderColor: '#8C533C' }}>
+              <Home size={18} /> <span className="d-none d-md-inline small">Feed</span>
+            </Link>
+            <Link href="/explore" className="d-flex align-items-center gap-1 text-decoration-none text-muted small">
+              <Compass size={18} /> <span className="d-none d-md-inline">Explore</span>
+            </Link>
+            <Link href="/jobs" className="d-flex align-items-center gap-1 text-decoration-none text-muted small">
+              <Briefcase size={18} /> <span className="d-none d-md-inline">Jobs</span>
+            </Link>
+            <Link href="/notifications" className="d-flex align-items-center gap-1 text-decoration-none text-muted small position-relative">
+              <Bell size={18} />
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger" style={{ fontSize: '0.6rem' }}>3</span>
+              <span className="d-none d-md-inline ms-1">Notifications</span>
+            </Link>
+            <Link href="/messages" className="d-flex align-items-center gap-1 text-decoration-none text-muted small position-relative">
+              <MessageSquare size={18} />
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-circle" style={{ backgroundColor: '#8C533C', fontSize: '0.6rem' }}>2</span>
+              <span className="d-none d-md-inline ms-1">Messages</span>
+            </Link>
+
+            {/* Auth Action */}
             {user ? (
-              <div className="d-flex align-items-center gap-3">
-                <Link href="/profile" className="text-dark fw-bold text-decoration-none d-flex align-items-center gap-1">
-                  <User size={18} /> {user.name}
-                </Link>
-                <button onClick={handleLogout} className="btn btn-outline-danger btn-sm rounded-pill d-flex align-items-center gap-1">
-                  <LogOut size={16} /> Logout
-                </button>
-              </div>
+              <button onClick={handleLogout} className="btn btn-outline-secondary rounded-pill btn-sm d-flex align-items-center gap-1 ms-2">
+                <LogOut size={14} /> Logout
+              </button>
             ) : (
-              <div className="d-flex align-items-center gap-2">
-                <button onClick={() => setShowAuthModal(true)} className="btn btn-primary rounded-pill px-4 fw-semibold btn-sm">
-                  Sign In
-                </button>
-              </div>
+              <button onClick={() => setIsAuthOpen(true)} className="btn text-white rounded-pill btn-sm px-3 fw-semibold ms-2" style={{ backgroundColor: '#8C533C' }}>
+                Sign In
+              </button>
             )}
           </div>
         </div>
       </nav>
 
-      {showAuthModal && <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>
   );
 }
