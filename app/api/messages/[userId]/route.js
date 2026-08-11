@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db'; // adjust to your database connection helper
-import Message from '@/models/Message';
+import Message from '@/lib/models/Message';
 
 export async function GET(req, { params }) {
   await connectDB();
