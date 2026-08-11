@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   Home, Briefcase, Image as ImageIcon, MessageSquare, 
-  Search, User, Bell, Settings, LogOut, ChevronDown, LogIn 
+  Search, User, Settings, LogOut, ChevronDown, LogIn 
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -34,7 +34,6 @@ export default function Navbar() {
       ? fullName 
       : (email.split('@')[0] || 'Member User');
 
-    // Attach dynamic metrics for LeftSidebar to consume
     const newUser = { 
       id: userName.toLowerCase().replace(/\s+/g, '-'), 
       name: userName,
@@ -48,7 +47,6 @@ export default function Navbar() {
     localStorage.setItem('user', JSON.stringify(newUser));
     setUser(newUser);
     
-    // Dispatch event so SidebarLeft immediately re-renders with new counts
     window.dispatchEvent(new Event('user-auth-change'));
 
     setShowAuthModal(false);
@@ -78,7 +76,6 @@ export default function Navbar() {
       <nav className="navbar bg-white border-bottom sticky-top py-2 shadow-sm">
         <div className="container-fluid px-3 px-md-5 d-flex align-items-center justify-content-between">
           
-          {/* Logo */}
           <Link href="/" className="navbar-brand d-flex align-items-center gap-2 fw-bold me-2">
             <div className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style={{ width: '36px', height: '36px', backgroundColor: '#8C533C' }}>
               S
@@ -86,7 +83,6 @@ export default function Navbar() {
             <span className="fs-5 tracking-tight text-dark d-none d-sm-inline">Style<span style={{ color: '#8C533C' }}>Hive</span></span>
           </Link>
 
-          {/* Search Bar */}
           <div className="d-flex align-items-center me-2 flex-grow-1" style={{ maxWidth: '260px' }}>
             <div className="input-group">
               <span className="input-group-text bg-light border-0 ps-3"><Search size={16} className="text-muted" /></span>
@@ -94,7 +90,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Navigation Links */}
           <ul className="navbar-nav d-flex flex-row gap-1 gap-md-2 mb-0 mx-auto">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -114,7 +109,6 @@ export default function Navbar() {
             })}
           </ul>
 
-          {/* User Auth Controls */}
           <div className="d-flex align-items-center gap-2">
             {user ? (
               <div className="position-relative">
@@ -167,7 +161,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Auth Modal */}
       {showAuthModal && (
         <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
           <div className="bg-white rounded-4 p-4 shadow-lg border" style={{ width: '360px' }}>
@@ -263,7 +256,6 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Logout Modal */}
       {showLogoutModal && (
         <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
           <div className="bg-white rounded-4 p-4 shadow-lg border text-center" style={{ width: '340px' }}>
