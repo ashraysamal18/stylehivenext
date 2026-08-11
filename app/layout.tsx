@@ -1,21 +1,22 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './globals.css';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 export const metadata = {
   title: 'StyleHive - Fashion Network',
-  description: 'Connect, share portfolios, and find opportunities in fashion.',
+  description: 'Connect with fashion designers, stylists, and creatives.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body className="bg-light d-flex flex-column min-vh-100">
+      <body>
         <Navbar />
-        <main className="container-fluid px-lg-5 py-4 flex-grow-1">
-          {children}
-        </main>
-        <Footer />
+        <main>{children}</main>
       </body>
     </html>
   );
