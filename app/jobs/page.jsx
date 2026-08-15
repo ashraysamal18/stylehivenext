@@ -1,436 +1,522 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
-  Search, MapPin, DollarSign, PlusCircle, Building, Plane, 
-  Users, Image as ImageIcon, CheckCircle, FileText 
+  Briefcase, Search, MapPin, DollarSign, Clock, Filter, 
+  Bookmark, CheckCircle, PlusCircle, Users, MessageSquare, 
+  Send, Eye, Sparkles, ChevronRight, X, Calendar, UserCheck, UserX
 } from 'lucide-react';
 
-const DUMMY_JOBS = [
-  {
-    _id: 'job1',
-    title: 'Lead Runway Stylist',
-    company: 'Maison Laurent',
-    location: 'Paris, France',
-    gigType: 'Runway Prep',
-    rateType: 'Per Show',
-    budget: '€4,500',
-    travelCovered: true,
-    category: 'Styling',
-    deliverables: 'Complete curation and fitting for 28 runway looks + backstage direction.',
-    taggedCrew: ['Sophia Laurent (Creative Director)', 'Marcello V. (Casting)'],
-    description: 'Seeking an experienced lead stylist for our upcoming FW Paris presentation. Must provide digital lookbook references.'
-  },
-  {
-    _id: 'job2',
-    title: 'Fashion Editorial Photographer',
-    company: 'Vogue Studio Media',
-    location: 'Milan, Italy',
-    gigType: 'Single-Day Shoot',
-    rateType: 'Day Rate',
-    budget: '€900 / day',
-    travelCovered: false,
-    category: 'Photography',
-    deliverables: '20 high-res retouched editorial shots within 5 business days.',
-    taggedCrew: ['Aisha Khan (Lead Designer)'],
-    description: 'Looking for a high-fashion editorial photographer for an outdoor sunset shoot in Lake Como.'
-  }
-];
+export default function JobMarketplacePage() {
+  // Toggle between Seeker ('professional') and Recruiter ('company') view
+  const [viewMode, setViewMode] = useState('professional'); 
+  const [activeTab, setActiveTab] = useState('explore'); // explore | applied | saved (for professionals)
 
-export default function ArtistJobBoard() {
-  const [jobs, setJobs] = useState(DUMMY_JOBS);
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  
-  // Modals state
-  const [showPostModal, setShowPostModal] = useState(false);
+  // Filters state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRole, setSelectedRole] = useState('All');
+  const [selectedJobType, setSelectedJobType] = useState('All');
+
+  // Modal States
   const [selectedJobForApply, setSelectedJobForApply] = useState(null);
-  
-  // Application Form State
-  const [applyPortfolio, setApplyPortfolio] = useState('');
-  const [applyNote, setApplyNote] = useState('');
-  const [appliedSuccess, setAppliedSuccess] = useState(false);
+  const [selectedJobApplicants, setSelectedJobApplicants] = useState(null);
+  const [showPostJobModal, setShowPostJobModal] = useState(false);
 
-  // New Job Post Form State
-  const [formData, setFormData] = useState({
-    title: '',
-    company: '',
-    location: '',
-    gigType: 'Editorial Campaign',
-    rateType: 'Day Rate',
-    budget: '',
-    travelCovered: false,
-    category: 'Styling',
-    deliverables: '',
-    taggedCrew: '',
-    description: ''
-  });
-
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
-  const fetchJobs = async () => {
-    try {
-      const res = await fetch('/api/jobs');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.length > 0) setJobs(data);
-      }
-    } catch (err) {
-      console.log('Using fallback dummy data');
+  // Sample Jobs Database
+  const [jobs, setJobs] = useState([
+    {
+      id: 'job-1',
+      title: 'Lead Fashion Stylist — AW26 Campaign',
+      company: 'Maison Lumière',
+      logo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100',
+      location: 'Mumbai, India (On-site)',
+      type: 'Project / Contract',
+      category: 'Stylist',
+      rate: '$800 - $1,200 / Day',
+      experienceRequired: '5+ Years',
+      postedAgo: '2 hours ago',
+      deadline: 'Aug 28, 2026',
+      description: 'Seeking an experienced lead fashion stylist to spearhead visual direction for our upcoming Autumn/Winter campaign. Must have prior luxury editorial experience.',
+      requirements: ['5+ years high-fashion styling', 'Relationships with major modeling agencies', 'Strong moodboard curation skills'],
+      saved: false,
+      applied: false,
+      applicantsCount: 14,
+      applicantsList: [
+        { id: 'app-1', name: 'Khanak Kasana', role: 'Fashion Stylist & Creative Director', experience: '6 Years', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100', status: 'Pending' },
+        { id: 'app-2', name: 'Rohan Mehta', role: 'Editorial Stylist', experience: '4 Years', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100', status: 'Shortlisted' }
+      ]
+    },
+    {
+      id: 'job-2',
+      title: 'Senior Fashion Photographer',
+      company: 'Vogue Motion Studio',
+      logo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100',
+      location: 'Delhi NCR, India',
+      type: 'Full-Time',
+      category: 'Photographer',
+      rate: '$60k - $80k / Year',
+      experienceRequired: '4+ Years',
+      postedAgo: '1 day ago',
+      deadline: 'Sep 05, 2026',
+      description: 'Looking for a studio fashion photographer skilled in Capture One, high-end lighting setups, and post-production workflows for magazine spreads.',
+      requirements: ['Expertise in Capture One & Photoshop', 'Studio lighting mastery', 'Portfolio proof of editorial work'],
+      saved: true,
+      applied: true,
+      applicantsCount: 28,
+      applicantsList: []
+    },
+    {
+      id: 'job-3',
+      title: 'Runway Creative Director',
+      company: 'Lakmé Couture Week',
+      logo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100',
+      location: 'Mumbai, India',
+      type: 'Contract',
+      category: 'Creative Director',
+      rate: '$2,500 / Project',
+      experienceRequired: '7+ Years',
+      postedAgo: '3 days ago',
+      deadline: 'Aug 25, 2026',
+      description: 'Oversee music, stage layout, lighting choreography, and collection sequencing for a 3-day fashion week runway show.',
+      requirements: ['Runway direction history', 'Team management', 'Live show execution'],
+      saved: false,
+      applied: false,
+      applicantsCount: 9,
+      applicantsList: []
     }
+  ]);
+
+  // Categories & Filters
+  const roles = ['All', 'Stylist', 'Photographer', 'Creative Director', 'Makeup Artist', 'Model', 'Fashion Designer'];
+  const jobTypes = ['All', 'Full-Time', 'Project / Contract', 'Freelance', 'Part-Time'];
+
+  // Toggle Save Job
+  const toggleSaveJob = (jobId) => {
+    setJobs(jobs.map(j => j.id === jobId ? { ...j, saved: !j.saved } : j));
   };
 
-  const handlePostSubmit = async (e) => {
-    e.preventDefault();
-    const payload = {
-      ...formData,
-      taggedCrew: formData.taggedCrew ? formData.taggedCrew.split(',').map(s => s.trim()) : []
-    };
-
-    try {
-      const res = await fetch('/api/jobs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        setShowPostModal(false);
-        fetchJobs();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
+  // Submit Application
   const handleApplySubmit = (e) => {
     e.preventDefault();
-    setAppliedSuccess(true);
-    setTimeout(() => {
-      setAppliedSuccess(false);
-      setSelectedJobForApply(null);
-      setApplyPortfolio('');
-      setApplyNote('');
-    }, 2000);
+    if (!selectedJobForApply) return;
+
+    setJobs(jobs.map(j => {
+      if (j.id === selectedJobForApply.id) {
+        return {
+          ...j,
+          applied: true,
+          applicantsCount: j.applicantsCount + 1,
+          applicantsList: [
+            ...j.applicantsList,
+            {
+              id: `app-${Date.now()}`,
+              name: 'Khanak Kasana',
+              role: 'Fashion Stylist & Creative Director',
+              experience: '6 Years',
+              avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100',
+              status: 'Pending'
+            }
+          ]
+        };
+      }
+      return j;
+    }));
+
+    alert('Application submitted successfully!');
+    setSelectedJobForApply(null);
   };
 
-  const filteredJobs = jobs.filter((job) => {
-    const matchesSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
-                          job.company.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || job.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+  // Update Applicant Status (Shortlist/Reject)
+  const updateApplicantStatus = (jobId, applicantId, newStatus) => {
+    setJobs(jobs.map(j => {
+      if (j.id === jobId) {
+        return {
+          ...j,
+          applicantsList: j.applicantsList.map(a => a.id === applicantId ? { ...a, status: newStatus } : a)
+        };
+      }
+      return j;
+    }));
+  };
+
+  // Filter Jobs
+  const filteredJobs = jobs.filter(job => {
+    const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          job.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRole = selectedRole === 'All' || job.category === selectedRole;
+    const matchesType = selectedJobType === 'All' || job.type === selectedJobType;
+
+    if (viewMode === 'professional') {
+      if (activeTab === 'saved') return job.saved && matchesSearch && matchesRole && matchesType;
+      if (activeTab === 'applied') return job.applied && matchesSearch && matchesRole && matchesType;
+    }
+
+    return matchesSearch && matchesRole && matchesType;
   });
 
   return (
-    <div className="container-fluid px-3 px-md-5 py-4">
-      
-      {/* Header Banner */}
-      <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 text-white" style={{ backgroundColor: '#8C533C' }}>
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div className="min-vh-100 py-4" style={{ backgroundColor: '#F8F9FA' }}>
+      <div className="container px-3 px-lg-5">
+        
+        {/* TOP TOOLBAR: VIEW TOGGLE (PROFESSIONAL vs COMPANY) */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 p-3 bg-white rounded-4 shadow-sm border">
           <div>
-            <h3 className="fw-bold mb-1">Creative Gig & Project Board</h3>
-            <p className="mb-0 text-white-50 small">
-              Transparent budgets, direct portfolio applications, and crew networking built specifically for fashion artists.
-            </p>
+            <h4 className="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+              <Briefcase size={22} style={{ color: '#8C533C' }} /> StyleHive Creative Opportunities
+            </h4>
+            <p className="text-muted small mb-0">The premier career marketplace for fashion, editorial, and commercial creators.</p>
           </div>
-          <button
-            onClick={() => setShowPostModal(true)}
-            className="btn btn-light rounded-pill px-4 fw-bold text-dark d-flex align-items-center gap-2 align-self-start align-self-md-auto"
-          >
-            <PlusCircle size={18} /> Post Project Gig
-          </button>
-        </div>
-      </div>
 
-      {/* Filter and Search Bar */}
-      <div className="row g-3 mb-4">
-        <div className="col-12 col-md-8">
-          <div className="input-group">
-            <span className="input-group-text bg-white border-0 shadow-sm ps-3">
-              <Search size={18} className="text-muted" />
-            </span>
-            <input
-              type="text"
-              className="form-control bg-white border-0 shadow-sm py-2"
-              placeholder="Search gigs, brands, or creative roles..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          <div className="mt-3 mt-md-0 d-flex gap-2 bg-light p-1 rounded-pill border">
+            <button
+              onClick={() => setViewMode('professional')}
+              className={`btn btn-sm rounded-pill px-4 fw-bold transition ${viewMode === 'professional' ? 'text-white' : 'btn-light text-muted border-0'}`}
+              style={viewMode === 'professional' ? { backgroundColor: '#8C533C' } : {}}
+            >
+              For Professionals
+            </button>
+            <button
+              onClick={() => setViewMode('company')}
+              className={`btn btn-sm rounded-pill px-4 fw-bold transition ${viewMode === 'company' ? 'text-white' : 'btn-light text-muted border-0'}`}
+              style={viewMode === 'company' ? { backgroundColor: '#8C533C' } : {}}
+            >
+              For Companies / Hiring
+            </button>
           </div>
         </div>
-        <div className="col-12 col-md-4">
-          <select
-            className="form-select bg-white border-0 shadow-sm py-2"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="All">All Disciplines</option>
-            <option value="Styling">Styling</option>
-            <option value="Photography">Photography</option>
-            <option value="Design">Design & Pattern Drafting</option>
-            <option value="Modeling">Runway & Editorial Model</option>
-          </select>
-        </div>
-      </div>
 
-      {/* Gigs & Jobs Cards */}
-      <div className="row g-3">
-        {filteredJobs.map((job) => (
-          <div key={job._id} className="col-12 col-md-6">
-            <div className="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white d-flex flex-column justify-content-between">
-              <div>
-                {/* Badges */}
-                <div className="d-flex flex-wrap gap-2 mb-3 align-items-center">
-                  <span className="badge rounded-pill text-white px-3 py-1" style={{ backgroundColor: '#8C533C' }}>
-                    {job.category}
-                  </span>
-                  <span className="badge bg-light text-dark border">{job.gigType}</span>
-                  {job.travelCovered && (
-                    <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 d-flex align-items-center gap-1">
-                      <Plane size={12} /> Travel/Lodging Covered
-                    </span>
-                  )}
+        {/* 1. PROFESSIONAL SIDE */}
+        {viewMode === 'professional' && (
+          <div>
+            {/* Search & Secondary Nav */}
+            <div className="row g-3 mb-4">
+              <div className="col-md-7">
+                <div className="input-group bg-white rounded-4 shadow-sm border overflow-hidden p-1">
+                  <span className="input-group-text bg-white border-0 text-muted ps-3"><Search size={18} /></span>
+                  <input
+                    type="text"
+                    className="form-control border-0 shadow-none ps-2"
+                    placeholder="Search titles, skills, companies, or cities..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
-
-                {/* Title & Brand */}
-                <h5 className="fw-bold text-dark mb-1">{job.title}</h5>
-                <p className="text-muted small fw-medium mb-3 d-flex align-items-center gap-1">
-                  <Building size={14} /> {job.company} • <MapPin size={14} /> {job.location}
-                </p>
-
-                {/* Budget Box */}
-                <div className="p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between" style={{ backgroundColor: '#FAF8F5', border: '1px solid #EFECE6' }}>
-                  <span className="text-muted small">Upfront Budget ({job.rateType}):</span>
-                  <span className="fw-bold text-dark d-flex align-items-center gap-1" style={{ color: '#8C533C' }}>
-                    <DollarSign size={16} /> {job.budget}
-                  </span>
-                </div>
-
-                <p className="text-muted small mb-3">{job.description}</p>
-
-                {/* Deliverables */}
-                {job.deliverables && (
-                  <div className="mb-3">
-                    <small className="fw-bold text-dark d-block mb-1">Expected Deliverables:</small>
-                    <p className="text-muted small mb-0 p-2 bg-light rounded-2 border-start border-3" style={{ borderColor: '#8C533C' }}>
-                      {job.deliverables}
-                    </p>
-                  </div>
-                )}
-
-                {/* Tagged Crew Members */}
-                {job.taggedCrew && job.taggedCrew.length > 0 && (
-                  <div className="mb-3">
-                    <small className="text-muted d-flex align-items-center gap-1 mb-1">
-                      <Users size={12} /> Confirmed Project Crew:
-                    </small>
-                    <div className="d-flex flex-wrap gap-1">
-                      {job.taggedCrew.map((crew, idx) => (
-                        <span key={idx} className="badge bg-light text-secondary border fw-normal" style={{ fontSize: '0.7rem' }}>
-                          {crew}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
-              {/* Action Button */}
-              <div className="border-top pt-3 mt-2">
-                <button
-                  onClick={() => setSelectedJobForApply(job)}
-                  className="btn text-white w-100 rounded-pill fw-bold btn-sm d-flex align-items-center justify-content-center gap-2"
-                  style={{ backgroundColor: '#8C533C' }}
+              <div className="col-md-5 d-flex gap-2">
+                <button 
+                  onClick={() => setActiveTab('explore')}
+                  className={`btn rounded-pill px-3 py-2 fw-bold text-capitalize flex-grow-1 ${activeTab === 'explore' ? 'text-white' : 'btn-white bg-white border text-dark'}`}
+                  style={activeTab === 'explore' ? { backgroundColor: '#8C533C' } : {}}
                 >
-                  <ImageIcon size={16} /> Submit Visual Portfolio
+                  Explore Jobs
+                </button>
+                <button 
+                  onClick={() => setActiveTab('applied')}
+                  className={`btn rounded-pill px-3 py-2 fw-bold text-capitalize flex-grow-1 ${activeTab === 'applied' ? 'text-white' : 'btn-white bg-white border text-dark'}`}
+                  style={activeTab === 'applied' ? { backgroundColor: '#8C533C' } : {}}
+                >
+                  Applications ({jobs.filter(j => j.applied).length})
+                </button>
+                <button 
+                  onClick={() => setActiveTab('saved')}
+                  className={`btn rounded-pill px-3 py-2 fw-bold text-capitalize flex-grow-1 ${activeTab === 'saved' ? 'text-white' : 'btn-white bg-white border text-dark'}`}
+                  style={activeTab === 'saved' ? { backgroundColor: '#8C533C' } : {}}
+                >
+                  Saved ({jobs.filter(j => j.saved).length})
                 </button>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
 
-      {/* Visual Application Modal */}
-      {selectedJobForApply && (
-        <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content rounded-4 border-0 p-3">
-              <div className="modal-header border-0">
-                <div>
-                  <h5 className="modal-title fw-bold">Submit Visual Application</h5>
-                  <small className="text-muted">Applying for {selectedJobForApply.title} at {selectedJobForApply.company}</small>
-                </div>
-                <button type="button" className="btn-close" onClick={() => setSelectedJobForApply(null)}></button>
-              </div>
+            {/* Filter Pills */}
+            <div className="d-flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-none">
+              <span className="small text-muted fw-bold align-self-center me-2">Role:</span>
+              {roles.map(role => (
+                <button
+                  key={role}
+                  onClick={() => setSelectedRole(role)}
+                  className={`btn btn-sm rounded-pill px-3 py-1 text-nowrap fw-medium ${selectedRole === role ? 'btn-dark' : 'btn-white bg-white border text-secondary'}`}
+                >
+                  {role}
+                </button>
+              ))}
+            </div>
 
-              {appliedSuccess ? (
-                <div className="modal-body text-center py-4">
-                  <CheckCircle size={48} className="text-success mb-3" />
-                  <h5 className="fw-bold">Portfolio Submitted!</h5>
-                  <p className="text-muted small mb-0">The hiring team has received your visual lookbook and note.</p>
+            {/* Jobs List */}
+            <div className="row g-4">
+              {filteredJobs.length === 0 ? (
+                <div className="col-12 text-center py-5">
+                  <p className="text-muted mb-0">No jobs found matching your criteria.</p>
                 </div>
               ) : (
-                <form onSubmit={handleApplySubmit}>
-                  <div className="modal-body d-flex flex-column gap-3">
-                    <div>
-                      <label className="form-label fw-bold small">StyleHive Lookbook or Portfolio Link *</label>
-                      <div className="input-group">
-                        <span className="input-group-text bg-light"><ImageIcon size={16} /></span>
-                        <input
-                          type="url"
-                          className="form-control"
-                          placeholder="https://stylehive.com/profile/yourname or Instagram/Behance"
-                          required
-                          value={applyPortfolio}
-                          onChange={(e) => setApplyPortfolio(e.target.value)}
-                        />
-                      </div>
-                      <small className="text-muted" style={{ fontSize: '0.7rem' }}>
-                        Post your recent mood boards, editorial shots, or sketches.
-                      </small>
-                    </div>
+                filteredJobs.map(job => (
+                  <div key={job.id} className="col-12">
+                    <div className="card border-0 shadow-sm rounded-4 p-4 bg-white position-relative hover-lift transition">
+                      <div className="row g-3 align-items-center">
+                        
+                        {/* Company Logo */}
+                        <div className="col-auto">
+                          <img src={job.logo} alt={job.company} className="rounded-3 object-fit-cover border" style={{ width: '65px', height: '65px' }} />
+                        </div>
 
-                    <div>
-                      <label className="form-label fw-bold small">Pitch / Availability Note</label>
-                      <textarea
-                        className="form-control"
-                        rows="3"
-                        placeholder="Mention your availability for the shoot dates, day rate confirmation, or equipment list..."
-                        value={applyNote}
-                        onChange={(e) => setApplyNote(e.target.value)}
-                      ></textarea>
+                        {/* Job Details */}
+                        <div className="col">
+                          <div className="d-flex align-items-center gap-2 flex-wrap mb-1">
+                            <h5 className="fw-bold text-dark mb-0">{job.title}</h5>
+                            <span className="badge rounded-pill bg-light text-dark border px-3 py-1 small">{job.type}</span>
+                          </div>
+
+                          <div className="d-flex align-items-center gap-3 text-muted small flex-wrap mb-2">
+                            <span className="fw-semibold text-dark">{job.company}</span>
+                            <span>•</span>
+                            <span className="d-flex align-items-center gap-1"><MapPin size={14} /> {job.location}</span>
+                            <span>•</span>
+                            <span className="d-flex align-items-center gap-1 text-success fw-bold"><DollarSign size={14} /> {job.rate}</span>
+                          </div>
+
+                          <p className="text-secondary small mb-2 line-clamp-2">{job.description}</p>
+
+                          <div className="d-flex gap-2 flex-wrap">
+                            {job.requirements.map((req, i) => (
+                              <span key={i} className="badge bg-light text-secondary fw-normal border rounded-pill" style={{ fontSize: '0.75rem' }}>
+                                {req}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="col-lg-auto d-flex flex-column gap-2 text-end">
+                          <span className="text-muted small d-block">{job.postedAgo}</span>
+                          
+                          <div className="d-flex gap-2 align-items-center">
+                            <button 
+                              onClick={() => toggleSaveJob(job.id)}
+                              className={`btn btn-sm rounded-circle p-2 ${job.saved ? 'btn-danger text-white' : 'btn-outline-secondary'}`}
+                              title="Save Job"
+                            >
+                              <Bookmark size={18} fill={job.saved ? 'currentColor' : 'none'} />
+                            </button>
+
+                            {job.applied ? (
+                              <button className="btn btn-success btn-sm rounded-pill fw-bold px-4 py-2 d-flex align-items-center gap-1" disabled>
+                                <CheckCircle size={16} /> Applied
+                              </button>
+                            ) : (
+                              <button 
+                                onClick={() => setSelectedJobForApply(job)}
+                                className="btn text-white btn-sm rounded-pill fw-bold px-4 py-2 shadow-sm" 
+                                style={{ backgroundColor: '#8C533C' }}
+                              >
+                                Easy Apply
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
-                  <div className="modal-footer border-0">
-                    <button type="button" className="btn btn-light rounded-pill" onClick={() => setSelectedJobForApply(null)}>Cancel</button>
-                    <button type="submit" className="btn text-white rounded-pill px-4 fw-bold" style={{ backgroundColor: '#8C533C' }}>
-                      Send Application
-                    </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 2. COMPANY / HIRING SIDE */}
+        {viewMode === 'company' && (
+          <div>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h5 className="fw-bold text-dark mb-0">Active Job Listings & Hiring Workspace</h5>
+                <p className="text-muted small mb-0">Manage applicants, schedule interviews, and post open mandates.</p>
+              </div>
+
+              <button 
+                onClick={() => setShowPostJobModal(true)}
+                className="btn text-white rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2"
+                style={{ backgroundColor: '#8C533C' }}
+              >
+                <PlusCircle size={18} /> Post a New Job
+              </button>
+            </div>
+
+            {/* Recruiter Job Management Cards */}
+            <div className="row g-4">
+              {jobs.map(job => (
+                <div key={job.id} className="col-12">
+                  <div className="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                      <div>
+                        <span className="badge bg-light text-dark border rounded-pill px-3 py-1 small mb-2">{job.category}</span>
+                        <h5 className="fw-bold text-dark mb-1">{job.title}</h5>
+                        <p className="text-muted small mb-0">{job.location} • Posted: {job.postedAgo} • Budget: <strong>{job.rate}</strong></p>
+                      </div>
+
+                      <div className="d-flex align-items-center gap-3">
+                        <div className="text-end">
+                          <span className="h4 fw-bold text-dark mb-0 d-block">{job.applicantsCount}</span>
+                          <span className="text-muted small">Total Applicants</span>
+                        </div>
+
+                        <button 
+                          onClick={() => setSelectedJobApplicants(job)}
+                          className="btn btn-outline-dark rounded-pill fw-bold px-4 py-2 d-flex align-items-center gap-2"
+                        >
+                          <Users size={16} /> Review Applicants
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </form>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      {/* MODAL 1: EASY APPLY FOR PROFESSIONALS */}
+      {selectedJobForApply && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3" style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1060 }}>
+          <div className="bg-white rounded-4 shadow-lg p-4 w-100" style={{ maxWidth: '500px' }}>
+            <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <h5 className="fw-bold text-dark mb-0">Apply for {selectedJobForApply.title}</h5>
+              <button className="btn-close shadow-none" onClick={() => setSelectedJobForApply(null)}></button>
+            </div>
+
+            <form onSubmit={handleApplySubmit}>
+              <div className="mb-3">
+                <label className="form-label small fw-bold text-secondary">Cover Note / Pitch</label>
+                <textarea className="form-control rounded-3" rows={3} placeholder="Introduce yourself and share why you are a great fit..." required></textarea>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold text-secondary">Portfolio Link</label>
+                <input type="url" className="form-control rounded-3" defaultValue="https://stylehive.com/profile/khanak" required />
+              </div>
+
+              <div className="mb-4">
+                <label className="form-label small fw-bold text-secondary">Expected Rate / Compensation</label>
+                <input type="text" className="form-control rounded-3" defaultValue={selectedJobForApply.rate} required />
+              </div>
+
+              <button type="submit" className="btn text-white rounded-pill w-100 fw-bold py-2 shadow-sm" style={{ backgroundColor: '#8C533C' }}>
+                Submit Application
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: REVIEW APPLICANTS (RECRUITER VIEW) */}
+      {selectedJobApplicants && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3" style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1060 }}>
+          <div className="bg-white rounded-4 shadow-lg p-4 w-100 h-100" style={{ maxWidth: '750px', maxHeight: '85vh' }}>
+            <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <div>
+                <h5 className="fw-bold text-dark mb-0">Applicants for {selectedJobApplicants.title}</h5>
+                <span className="text-muted small">{selectedJobApplicants.applicantsList.length} Total Applicants</span>
+              </div>
+              <button className="btn-close shadow-none" onClick={() => setSelectedJobApplicants(null)}></button>
+            </div>
+
+            <div className="overflow-y-auto" style={{ maxHeight: 'calc(85vh - 120px)' }}>
+              {selectedJobApplicants.applicantsList.length === 0 ? (
+                <p className="text-muted text-center py-5">No applicants yet for this listing.</p>
+              ) : (
+                <div className="d-flex flex-column gap-3">
+                  {selectedJobApplicants.applicantsList.map(applicant => (
+                    <div key={applicant.id} className="card border p-3 rounded-4 bg-light">
+                      <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div className="d-flex align-items-center gap-3">
+                          <img src={applicant.avatar} alt={applicant.name} className="rounded-circle object-fit-cover" style={{ width: '50px', height: '50px' }} />
+                          <div>
+                            <h6 className="fw-bold text-dark mb-0">{applicant.name}</h6>
+                            <span className="text-muted small">{applicant.role} • {applicant.experience} Exp</span>
+                          </div>
+                        </div>
+
+                        <div className="d-flex align-items-center gap-2">
+                          <span className={`badge rounded-pill px-3 py-2 ${applicant.status === 'Shortlisted' ? 'bg-success' : applicant.status === 'Rejected' ? 'bg-danger' : 'bg-warning text-dark'}`}>
+                            {applicant.status}
+                          </span>
+
+                          <button 
+                            onClick={() => updateApplicantStatus(selectedJobApplicants.id, applicant.id, 'Shortlisted')}
+                            className="btn btn-sm btn-outline-success rounded-circle p-2"
+                            title="Shortlist Applicant"
+                          >
+                            <UserCheck size={16} />
+                          </button>
+
+                          <button 
+                            onClick={() => updateApplicantStatus(selectedJobApplicants.id, applicant.id, 'Rejected')}
+                            className="btn btn-sm btn-outline-danger rounded-circle p-2"
+                            title="Reject Applicant"
+                          >
+                            <UserX size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
         </div>
       )}
 
-      {/* Post Project Gig Modal */}
-      {showPostModal && (
-        <div className="modal d-block bg-dark bg-opacity-50" tabIndex="-1">
-          <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content rounded-4 border-0 p-3">
-              <div className="modal-header border-0">
-                <h5 className="modal-title fw-bold">Post a Creative Project or Gig</h5>
-                <button type="button" className="btn-close" onClick={() => setShowPostModal(false)}></button>
-              </div>
-              <form onSubmit={handlePostSubmit}>
-                <div className="modal-body d-flex flex-column gap-3">
-                  <div className="row g-2">
-                    <div className="col-6">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Gig Title (e.g. FW Campaign Photographer)"
-                        required
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      />
-                    </div>
-                    <div className="col-6">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Brand / Atelier Name"
-                        required
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row g-2">
-                    <div className="col-4">
-                      <select
-                        className="form-select"
-                        value={formData.gigType}
-                        onChange={(e) => setFormData({ ...formData, gigType: e.target.value })}
-                      >
-                        <option value="Editorial Campaign">Editorial Campaign</option>
-                        <option value="Runway Prep">Runway Prep</option>
-                        <option value="Single-Day Shoot">Single-Day Shoot</option>
-                        <option value="Lookbook">Lookbook</option>
-                      </select>
-                    </div>
-                    <div className="col-4">
-                      <select
-                        className="form-select"
-                        value={formData.rateType}
-                        onChange={(e) => setFormData({ ...formData, rateType: e.target.value })}
-                      >
-                        <option value="Day Rate">Day Rate</option>
-                        <option value="Per Show">Per Show</option>
-                        <option value="Per Look">Per Look</option>
-                        <option value="Full Project">Full Project</option>
-                      </select>
-                    </div>
-                    <div className="col-4">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Budget (e.g. €1,200)"
-                        required
-                        value={formData.budget}
-                        onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-check form-switch ms-1">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="travelCheck"
-                      checked={formData.travelCovered}
-                      onChange={(e) => setFormData({ ...formData, travelCovered: e.target.checked })}
-                    />
-                    <label className="form-check-label small text-muted" htmlFor="travelCheck">
-                      Travel & Accommodation Expenses Covered
-                    </label>
-                  </div>
-
-                  <textarea
-                    className="form-control"
-                    rows="2"
-                    placeholder="Expected Deliverables (e.g. 15 High-res edited retouched shots)"
-                    value={formData.deliverables}
-                    onChange={(e) => setFormData({ ...formData, deliverables: e.target.value })}
-                  ></textarea>
-
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Tag Confirmed Crew (comma separated, e.g. Sophia L. (Stylist), Marco B. (Photo))"
-                    value={formData.taggedCrew}
-                    onChange={(e) => setFormData({ ...formData, taggedCrew: e.target.value })}
-                  />
-
-                  <textarea
-                    className="form-control"
-                    rows="3"
-                    placeholder="Project Brief & Details..."
-                    required
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  ></textarea>
-                </div>
-                <div className="modal-footer border-0">
-                  <button type="button" className="btn btn-light rounded-pill" onClick={() => setShowPostModal(false)}>Cancel</button>
-                  <button type="submit" className="btn text-white rounded-pill px-4" style={{ backgroundColor: '#8C533C' }}>
-                    Publish Gig
-                  </button>
-                </div>
-              </form>
+      {/* MODAL 3: POST A NEW JOB */}
+      {showPostJobModal && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3" style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1060 }}>
+          <div className="bg-white rounded-4 shadow-lg p-4 w-100" style={{ maxWidth: '550px' }}>
+            <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+              <h5 className="fw-bold text-dark mb-0">Post a Creative Mandate</h5>
+              <button className="btn-close shadow-none" onClick={() => setShowPostJobModal(false)}></button>
             </div>
+
+            <form onSubmit={(e) => { e.preventDefault(); alert('Job posted successfully!'); setShowPostJobModal(false); }}>
+              <div className="mb-3">
+                <label className="form-label small fw-bold text-secondary">Job Title</label>
+                <input type="text" className="form-control rounded-3" placeholder="e.g. Lead Fashion Stylist - Cover Campaign" required />
+              </div>
+
+              <div className="row g-2 mb-3">
+                <div className="col-6">
+                  <label className="form-label small fw-bold text-secondary">Role Category</label>
+                  <select className="form-select rounded-3">
+                    <option>Stylist</option>
+                    <option>Photographer</option>
+                    <option>Creative Director</option>
+                    <option>Makeup Artist</option>
+                  </select>
+                </div>
+                <div className="col-6">
+                  <label className="form-label small fw-bold text-secondary">Job Type</label>
+                  <select className="form-select rounded-3">
+                    <option>Project / Contract</option>
+                    <option>Full-Time</option>
+                    <option>Freelance</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold text-secondary">Offered Rate / Salary</label>
+                <input type="text" className="form-control rounded-3" placeholder="e.g. $800 / Day or $70,000 / Year" required />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold text-secondary">Job Description</label>
+                <textarea className="form-control rounded-3" rows={3} placeholder="Describe project scope and responsibilities..." required></textarea>
+              </div>
+
+              <button type="submit" className="btn text-white rounded-pill w-100 fw-bold py-2 shadow-sm" style={{ backgroundColor: '#8C533C' }}>
+                Publish Job Listing
+              </button>
+            </form>
           </div>
         </div>
       )}
