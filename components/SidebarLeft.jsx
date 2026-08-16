@@ -54,11 +54,11 @@ export default function SidebarLeft() {
 
   useEffect(() => {
     loadUserData();
-    window.addEventListener('user-auth-change', loadUserData);
+    window.addEventListener('auth-change', loadUserData);
     window.addEventListener('storage', loadUserData);
 
     return () => {
-      window.removeEventListener('user-auth-change', loadUserData);
+      window.removeEventListener('auth-change', loadUserData);
       window.removeEventListener('storage', loadUserData);
     };
   }, [loadUserData]);

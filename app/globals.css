@@ -1,14 +1,61 @@
-@import "tailwindcss";
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* Custom Helper Utilities for Bootstrap Layouts */
-.hover-bg-light:hover {
-  background-color: #f8f9fa !important;
+:root {
+  --primary-color: #8c533c;
+  --bg-color: #f3f4f6;
+  --text-color: #212529;
 }
 
-.tracking-wider {
-  letter-spacing: 0.05em;
+* {
+  box-sizing: border-box;
 }
 
-.tracking-tight {
-  letter-spacing: -0.025em;
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ensure flex container permits independent vertical positioning */
+.sticky-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Fixed/Sticky Sidebar Class */
+.fixed-sidebar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 75px; /* Offset from header height */
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  z-index: 10;
+}
+
+/* Hide inner scrollbars on sticky sidebars */
+.fixed-sidebar::-webkit-scrollbar {
+  display: none;
+}
+.fixed-sidebar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.extra-small {
+  font-size: 0.75rem !important;
+}
+
+.text-brand {
+  color: var(--primary-color) !important;
+}
+
+.bg-brand {
+  background-color: var(--primary-color) !important;
+}
+
+a {
+  text-decoration: none;
 }

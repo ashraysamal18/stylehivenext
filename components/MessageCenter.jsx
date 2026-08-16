@@ -14,14 +14,16 @@ export default function MessageCenter() {
 
   // 1. Initialize user and Socket Connection
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const stored = localStorage.getItem('user');
+    const user = stored ? JSON.parse(stored) : null;
     setCurrentUser(user);
 
-    socket = io('http://localhost:5000'); // Your backend URL
+    // Guests have nothing to connect to a chat socket for
+    if (!user?._id) return;
 
-    if (user?._id) {
-      socket.emit('register_user', user._id);
-    }
+    socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000');
+
+    socket.emit('register_user', user._id);
 
     socket.on('receive_message', (newMsg) => {
       setMessages((prev) => [...prev, newMsg]);
@@ -51,7 +53,7 @@ export default function MessageCenter() {
   // 4. Send Message Handler
   const handleSend = (e) => {
     e.preventDefault();
-    if (!text.trim() || !activeUser) return;
+    if (!text.trim() || !activeUser || !currentUser) return;
 
     const payload = {
       senderId: currentUser._id,
@@ -63,6 +65,16 @@ export default function MessageCenter() {
     setMessages((prev) => [...prev, { ...payload, createdAt: new Date().toISOString() }]);
     setText('');
   };
+
+  if (!currentUser) {
+    return (
+      <div className="container-fluid px-3 px-md-5 py-4">
+        <div className="card border-0 shadow-sm rounded-4 bg-white p-5 text-center text-muted">
+          Please sign in to view and send messages.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container-fluid px-3 px-md-5 py-4">

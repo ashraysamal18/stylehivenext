@@ -4,15 +4,15 @@ import React from 'react';
 export default function Hero() {
   return (
     <div 
-      className="card border-0 rounded-4 overflow-hidden position-relative text-white p-4 p-md-5 d-flex justify-content-center"
+      className="card border-0 rounded-4 overflow-hidden position-relative text-white p-4 p-md-5 d-flex justify-content-center mb-4"
       style={{
         minHeight: '260px',
-        background: 'linear-gradient(90deg, #2A1A14 0%, #5E392B 45%, transparent 100%), url("https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80")',
+        background: 'linear-gradient(90deg, #2A1A14 0%, #5E392B 45%, rgba(0,0,0,0.2) 100%), url("https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80")',
         backgroundSize: 'cover',
         backgroundPosition: 'right center'
       }}
     >
-      <div style={{ maxWidth: '440px' }} className="z-1">
+      <div style={{ maxWidth: '440px', position: 'relative', zIndex: 2 }}>
         <span className="small text-uppercase tracking-wider opacity-75 d-flex align-items-center gap-1 mb-2" style={{ fontSize: '0.8rem' }}>
           ✨ Welcome to
         </span>

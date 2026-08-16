@@ -1,92 +1,78 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import PostCard from './PostCard';
-import Hero from './Hero';
-import { Image, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { Heart, MessageCircle, Share2 } from 'lucide-react';
 
-export default function Feed() {
-  const [posts, setPosts] = useState([]);
-  const [content, setContent] = useState('');
-  const [image, setImage] = useState('');
-  const [user, setUser] = useState(null);
+export default function PostCard({ post }) {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('user');
-    if (stored) setUser(JSON.parse(stored));
-    fetchPosts();
-  }, []);
+  if (!post) return null;
 
-  const fetchPosts = async () => {
-    try {
-      const res = await fetch('/api/posts');
-      if (res.ok) setPosts(await res.json());
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const author = post.author || {};
+  const comments = post.comments || [];
 
-  const handlePostSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    if (!token) return alert('Please sign in to publish a post.');
-
-    const res = await fetch('/api/posts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
-      body: JSON.stringify({ content, image })
-    });
-
-    if (res.ok) {
-      setContent('');
-      setImage('');
-      fetchPosts();
-    }
+  const handleLike = () => {
+    setLiked((prev) => !prev);
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
 
   return (
-    <div className="d-flex flex-column gap-3">
-      <Hero />
+    <div className="card border-0 shadow-sm rounded-4 p-3 bg-white">
+      {/* Author header */}
+      <div className="d-flex align-items-center gap-2 mb-2">
+        <div
+          className="rounded-circle text-white fw-bold d-flex align-items-center justify-content-center flex-shrink-0"
+          style={{ width: 40, height: 40, backgroundColor: '#8C533C' }}
+        >
+          {author.name ? author.name.charAt(0).toUpperCase() : '?'}
+        </div>
+        <div>
+          <h6 className="fw-bold mb-0 small">{author.name || 'Unknown User'}</h6>
+          <small className="text-muted" style={{ fontSize: '0.75rem' }}>
+            {author.role || 'Member'}
+          </small>
+        </div>
+      </div>
 
-      {/* Create Post Input */}
-      {user && (
-        <div className="card border-0 shadow-sm rounded-4 p-3 bg-white">
-          <form onSubmit={handlePostSubmit}>
-            <textarea
-              className="form-control border-0 bg-light rounded-3 p-3 mb-2"
-              rows={3}
-              placeholder={`What's happening in fashion today, ${user.name}?`}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-            ></textarea>
-            
-            <input
-              type="url"
-              className="form-control form-control-sm border-0 bg-light rounded-3 px-3 py-2 mb-3"
-              placeholder="Image URL (optional)"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            />
+      {/* Post content */}
+      {post.content && (
+        <p className="mb-2" style={{ whiteSpace: 'pre-wrap' }}>
+          {post.content}
+        </p>
+      )}
 
-            <div className="d-flex justify-content-between align-items-center">
-              <span className="text-muted small d-flex align-items-center gap-1">
-                <Image size={18} /> Add Media
-              </span>
-              <button type="submit" className="btn btn-primary rounded-pill px-4 fw-bold btn-sm d-flex align-items-center gap-1">
-                <Send size={14} /> Post
-              </button>
-            </div>
-          </form>
+      {/* Post image */}
+      {post.image && (
+        <div className="rounded-3 overflow-hidden mb-2">
+          <img
+            src={post.image}
+            alt="Post attachment"
+            className="w-100"
+            style={{ maxHeight: '420px', objectFit: 'cover' }}
+          />
         </div>
       )}
 
-      {/* Feed List */}
-      {posts.map((post) => (
-        <PostCard key={post._id} post={post} />
-      ))}
+      {/* Actions */}
+      <div className="d-flex align-items-center gap-3 pt-2 border-top mt-1">
+        <button
+          onClick={handleLike}
+          className="btn btn-sm d-flex align-items-center gap-1 border-0 bg-transparent px-2"
+          style={{ color: liked ? '#8C533C' : '#6c757d' }}
+        >
+          <Heart size={16} fill={liked ? 'currentColor' : 'none'} />
+          <span className="small fw-semibold">{likeCount}</span>
+        </button>
+
+        <button className="btn btn-sm d-flex align-items-center gap-1 border-0 bg-transparent px-2 text-secondary">
+          <MessageCircle size={16} />
+          <span className="small fw-semibold">{comments.length}</span>
+        </button>
+
+        <button className="btn btn-sm d-flex align-items-center gap-1 border-0 bg-transparent px-2 text-secondary ms-auto">
+          <Share2 size={16} />
+        </button>
+      </div>
     </div>
   );
 }

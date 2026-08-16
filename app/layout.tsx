@@ -1,10 +1,9 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
-import Navbar from '../components/Navbar';
+import Navbar from '@/components/Navbar';
 
 export const metadata = {
   title: 'StyleHive - Fashion Network',
-  description: 'Connect with fashion designers, stylists, and creatives.',
+  description: 'Creative network for fashion professionals',
 };
 
 export default function RootLayout({
@@ -14,9 +13,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#f3f4f6' }}>
         <Navbar />
-        <main>{children}</main>
+        {/* Full-bleed fluid wrapper without artificial max-width constraints */}
+        <main className="container-fluid px-3 px-md-4 px-xl-5 py-4">
+          {children}
+        </main>
       </body>
     </html>
   );

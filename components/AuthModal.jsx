@@ -1,8 +1,13 @@
 'use client';
 import React, { useState } from 'react';
 
-export default function AuthModal({ isOpen, onClose }) {
-  const [isLogin, setIsLogin] = useState(true);
+export default function AuthModal({ isOpen, onClose, defaultMode = 'login' }) {
+  const [isLogin, setIsLogin] = useState(defaultMode !== 'signup');
+
+  // Keep the form mode in sync if the parent re-opens the modal in a different mode
+  React.useEffect(() => {
+    if (isOpen) setIsLogin(defaultMode !== 'signup');
+  }, [isOpen, defaultMode]);
   const [formData, setFormData] = useState({ name: '', username: '', email: '', password: '', role: 'Fashion Designer' });
   const [error, setError] = useState('');
 
@@ -29,6 +34,7 @@ export default function AuthModal({ isOpen, onClose }) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     window.dispatchEvent(new Event('auth-change'));
+    setError('');
     onClose();
   };
 

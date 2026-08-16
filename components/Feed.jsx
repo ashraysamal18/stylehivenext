@@ -30,9 +30,21 @@ export default function Feed() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem('user');
-    if (stored) setUser(JSON.parse(stored));
+    const loadUser = () => {
+      const stored = localStorage.getItem('user');
+      setUser(stored ? JSON.parse(stored) : null);
+    };
+
+    loadUser();
     fetchPosts();
+
+    // Update the composer as soon as the user signs in or out anywhere in the app
+    window.addEventListener('auth-change', loadUser);
+    window.addEventListener('storage', loadUser);
+    return () => {
+      window.removeEventListener('auth-change', loadUser);
+      window.removeEventListener('storage', loadUser);
+    };
   }, []);
 
   const fetchPosts = async () => {

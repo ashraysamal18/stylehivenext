@@ -1,276 +1,209 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { 
-  Home, Briefcase, Image as ImageIcon, MessageSquare, 
-  Search, User, Settings, LogOut, ChevronDown, LogIn 
-} from 'lucide-react';
 
 export default function Navbar() {
-  const pathname = usePathname();
-
-  const [user, setUser] = useState(null);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
-
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [category, setCategory] = useState('Fashion Designer');
-  const [password, setPassword] = useState('');
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  const handleAuthSubmit = (e) => {
-    e.preventDefault();
-    const userName = authMode === 'signup' && fullName.trim() 
-      ? fullName 
-      : (email.split('@')[0] || 'Member User');
-
-    const newUser = { 
-      id: userName.toLowerCase().replace(/\s+/g, '-'), 
-      name: userName,
-      category: authMode === 'signup' ? category : 'Fashion Professional',
-      connections: authMode === 'signup' ? 12 : 412,
-      portfolioViews: authMode === 'signup' ? 85 : 1240,
-      location: 'Paris, France'
-    };
-
-    localStorage.setItem('token', 'sample-auth-token-123');
-    localStorage.setItem('user', JSON.stringify(newUser));
-    setUser(newUser);
-    
-    window.dispatchEvent(new Event('user-auth-change'));
-
-    setShowAuthModal(false);
-    setFullName('');
-    setEmail('');
-    setPassword('');
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    window.dispatchEvent(new Event('user-auth-change'));
-    setShowLogoutModal(false);
-    setIsProfileDropdownOpen(false);
-  };
-
-  const navLinks = [
-    { name: 'Feed', href: '/', icon: Home },
-    { name: 'Jobs', href: '/jobs', icon: Briefcase },
-    { name: 'Portfolio', href: user ? `/profile/${user.id}` : '#', icon: ImageIcon },
-    { name: 'Messages', href: '/messages', icon: MessageSquare },
-  ];
+  const [searchQuery, setSearchQuery] = useState('');
 
   return (
-    <>
-      <nav className="navbar bg-white border-bottom sticky-top py-2 shadow-sm">
-        <div className="container-fluid px-3 px-md-5 d-flex align-items-center justify-content-between">
-          
-          <Link href="/" className="navbar-brand d-flex align-items-center gap-2 fw-bold me-2">
-            <div className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style={{ width: '36px', height: '36px', backgroundColor: '#8C533C' }}>
-              S
-            </div>
-            <span className="fs-5 tracking-tight text-dark d-none d-sm-inline">Style<span style={{ color: '#8C533C' }}>Hive</span></span>
+    <nav style={styles.nav}>
+      <div style={styles.container}>
+        
+        {/* 1. LEFT: LOGO & SEARCH */}
+        <div style={styles.leftSection}>
+          <Link href="/" style={styles.logo}>
+            StyleHive
           </Link>
 
-          <div className="d-flex align-items-center me-2 flex-grow-1" style={{ maxWidth: '260px' }}>
-            <div className="input-group">
-              <span className="input-group-text bg-light border-0 ps-3"><Search size={16} className="text-muted" /></span>
-              <input type="text" className="form-control bg-light border-0 py-2 small" placeholder="Search designers, jobs..." />
-            </div>
-          </div>
-
-          <ul className="navbar-nav d-flex flex-row gap-1 gap-md-2 mb-0 mx-auto">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const active = pathname === link.href;
-              return (
-                <li key={link.name} className="nav-item">
-                  <Link
-                    href={link.href}
-                    className={`nav-link px-2 px-md-3 py-2 rounded-pill fw-medium d-flex align-items-center gap-1 gap-md-2 ${active ? 'text-white' : 'text-secondary'}`}
-                    style={active ? { backgroundColor: '#8C533C' } : { fontSize: '0.85rem' }}
-                  >
-                    <Icon size={18} />
-                    <span className="d-none d-md-inline">{link.name}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="d-flex align-items-center gap-2">
-            {user ? (
-              <div className="position-relative">
-                <button
-                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                  className="btn text-white rounded-pill px-3 py-2 fw-bold d-flex align-items-center gap-2 btn-sm border-0 shadow-sm"
-                  style={{ backgroundColor: '#8C533C' }}
-                >
-                  <User size={16} />
-                  <span className="d-none d-sm-inline">{user.name}</span>
-                  <ChevronDown size={14} />
-                </button>
-
-                {isProfileDropdownOpen && (
-                  <div className="position-absolute end-0 mt-2 bg-white rounded-4 shadow-lg border p-2 z-3" style={{ width: '210px' }}>
-                    <Link href={`/profile/${user.id}`} onClick={() => setIsProfileDropdownOpen(false)} className="dropdown-item p-2 rounded-3 text-dark small fw-medium d-flex align-items-center gap-2">
-                      <User size={16} style={{ color: '#8C533C' }} /> View Profile
-                    </Link>
-                    <Link href="/settings" onClick={() => setIsProfileDropdownOpen(false)} className="dropdown-item p-2 rounded-3 text-dark small fw-medium d-flex align-items-center gap-2">
-                      <Settings size={16} className="text-secondary" /> Settings
-                    </Link>
-                    <hr className="my-1 border-light" />
-                    <button onClick={() => { setIsProfileDropdownOpen(false); setShowLogoutModal(true); }} className="dropdown-item p-2 rounded-3 text-danger small fw-bold d-flex align-items-center gap-2 w-100 text-start bg-transparent border-0">
-                      <LogOut size={16} /> Log Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="d-flex align-items-center gap-2">
-                <button 
-                  type="button"
-                  onClick={() => { setAuthMode('login'); setShowAuthModal(true); }} 
-                  className="btn btn-light text-dark rounded-pill px-3 py-2 fw-bold btn-sm border"
-                >
-                  <LogIn size={16} className="me-1 d-none d-sm-inline" /> Log In
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => { setAuthMode('signup'); setShowAuthModal(true); }} 
-                  className="btn text-white rounded-pill px-3 py-2 fw-bold btn-sm shadow-sm" 
-                  style={{ backgroundColor: '#8C533C' }}
-                >
-                  Sign Up
-                </button>
-              </div>
-            )}
-          </div>
-
-        </div>
-      </nav>
-
-      {showAuthModal && (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
-          <div className="bg-white rounded-4 p-4 shadow-lg border" style={{ width: '360px' }}>
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="fw-bold text-dark mb-0">{authMode === 'login' ? 'Welcome Back' : 'Create Account'}</h5>
-              <button className="btn-close shadow-none" onClick={() => setShowAuthModal(false)}></button>
-            </div>
-
-            <form onSubmit={handleAuthSubmit}>
-              {authMode === 'signup' && (
-                <>
-                  <div className="mb-3">
-                    <label className="form-label small fw-bold text-secondary">Full Name</label>
-                    <input 
-                      type="text" 
-                      className="form-control rounded-3" 
-                      placeholder="e.g. Ashray Samal" 
-                      required 
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label small fw-bold text-secondary">Professional Category</label>
-                    <select 
-                      className="form-select rounded-3"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option value="Fashion Designer">Fashion Designer</option>
-                      <option value="Runway Stylist">Runway Stylist</option>
-                      <option value="Fashion Photographer">Fashion Photographer</option>
-                      <option value="Model / Brand Ambassador">Model / Brand Ambassador</option>
-                      <option value="Creative Director">Creative Director</option>
-                      <option value="Fashion Enthusiast">Fashion Enthusiast</option>
-                    </select>
-                  </div>
-                </>
-              )}
-
-              <div className="mb-3">
-                <label className="form-label small fw-bold text-secondary">Email Address</label>
-                <input 
-                  type="email" 
-                  className="form-control rounded-3" 
-                  placeholder="designer@stylehive.com" 
-                  required 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label small fw-bold text-secondary">Password</label>
-                <input 
-                  type="password" 
-                  className="form-control rounded-3" 
-                  placeholder="••••••••" 
-                  required 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              <button 
-                type="submit" 
-                className="btn text-white rounded-pill w-100 fw-bold py-2 shadow-sm mb-3" 
-                style={{ backgroundColor: '#8C533C' }}
-              >
-                {authMode === 'login' ? 'Log In' : 'Create Account & Sign In'}
-              </button>
-            </form>
-
-            <div className="text-center">
-              {authMode === 'login' ? (
-                <small className="text-muted">
-                  Don't have an account?{' '}
-                  <button type="button" onClick={() => setAuthMode('signup')} className="btn btn-link p-0 text-decoration-none fw-bold small" style={{ color: '#8C533C' }}>
-                    Sign Up
-                  </button>
-                </small>
-              ) : (
-                <small className="text-muted">
-                  Already have an account?{' '}
-                  <button type="button" onClick={() => setAuthMode('login')} className="btn btn-link p-0 text-decoration-none fw-bold small" style={{ color: '#8C533C' }}>
-                    Log In
-                  </button>
-                </small>
-              )}
-            </div>
+          <div style={styles.searchBox}>
+            <svg style={styles.searchIcon} viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              placeholder="Search talent, jobs..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={styles.searchInput}
+            />
           </div>
         </div>
-      )}
 
-      {showLogoutModal && (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
-          <div className="bg-white rounded-4 p-4 shadow-lg border text-center" style={{ width: '340px' }}>
-            <div className="rounded-circle mx-auto d-flex align-items-center justify-content-center text-danger mb-3 bg-danger bg-opacity-10" style={{ width: '56px', height: '56px' }}>
-              <LogOut size={26} />
-            </div>
-            <h5 className="fw-bold text-dark mb-1">Log Out of StyleHive?</h5>
-            <p className="text-muted small mb-4">You will need to sign back in to access your portfolio.</p>
-            <div className="d-flex gap-2">
-              <button onClick={() => setShowLogoutModal(false)} className="btn btn-light rounded-pill flex-grow-1 fw-bold text-secondary border btn-sm py-2">Cancel</button>
-              <button onClick={handleLogout} className="btn btn-danger rounded-pill flex-grow-1 fw-bold btn-sm py-2 shadow-sm">Yes, Log Out</button>
-            </div>
-          </div>
+        {/* 2. CENTER: CORE NAVIGATION TABS */}
+        <div style={styles.centerSection}>
+          <Link href="/" style={styles.navLink}>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>Feed</span>
+          </Link>
+
+          <Link href="/dashboard" style={styles.navLink}>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span>Dashboard</span>
+          </Link>
+
+          <Link href="/jobs" style={styles.navLink}>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            <span>Jobs</span>
+          </Link>
+
+          <Link href="/events" style={styles.navLink}>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span>Events</span>
+          </Link>
+
+          <Link href="/journal" style={styles.navLink}>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>Journal</span>
+          </Link>
         </div>
-      )}
-    </>
+
+        {/* 3. RIGHT: NOTIFICATIONS & PROFILE */}
+        <div style={styles.rightSection}>
+          <Link href="/messages" style={styles.iconButton} title="Messages">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </Link>
+
+          <Link href="/notifications" style={styles.iconButton} title="Notifications">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span style={styles.badge} />
+          </Link>
+
+          <Link href="/profile" style={styles.avatar}>
+            A
+          </Link>
+        </div>
+
+      </div>
+    </nav>
   );
 }
+
+const styles = {
+  nav: {
+    backgroundColor: '#ffffff',
+    borderBottom: '1px solid #e5e7eb',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000,
+    padding: '10px 20px',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
+  },
+  container: {
+    maxHeight: '40px',
+    margin: '0 auto',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  leftSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px'
+  },
+  logo: {
+    fontSize: '22px',
+    fontWeight: 'bold',
+    color: '#8C533C',
+    textDecoration: 'none'
+  },
+  searchBox: {
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: '#f3f4f6',
+    border: '1px solid #e5e7eb',
+    borderRadius: '20px',
+    padding: '6px 12px',
+    gap: '8px'
+  },
+  searchIcon: {
+    color: '#6b7280'
+  },
+  searchInput: {
+    border: 'none',
+    backgroundColor: 'transparent',
+    outline: 'none',
+    fontSize: '13px',
+    width: '140px',
+    color: '#111827'
+  },
+  centerSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '24px'
+  },
+  navLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    color: '#374151',
+    textDecoration: 'none',
+    fontSize: '13px',
+    fontWeight: '600'
+  },
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px'
+  },
+  iconButton: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    backgroundColor: '#f9fafb',
+    border: '1px solid #e5e7eb',
+    color: '#374151',
+    textDecoration: 'none'
+  },
+  badge: {
+    position: 'absolute',
+    top: '2px',
+    right: '2px',
+    width: '8px',
+    height: '8px',
+    backgroundColor: '#ef4444',
+    borderRadius: '50%',
+    border: '1.5px solid #ffffff'
+  },
+  avatar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    backgroundColor: '#8C533C',
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    textDecoration: 'none'
+  }
+};

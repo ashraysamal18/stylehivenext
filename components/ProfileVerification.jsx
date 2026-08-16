@@ -68,7 +68,7 @@ export default function ProfileVerification() {
             v.verified && (
               <div 
                 key={idx} 
-                className="d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill bg-light border text-secondary extra-small fw-semibold"
+                className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-light border text-secondary extra-small fw-semibold"
                 title={v.tooltip}
               >
                 <CheckCircle2 size={14} style={{ color: '#10B981' }} />
@@ -108,7 +108,7 @@ export default function ProfileVerification() {
                 {/* Endorse Action Button */}
                 <button
                   onClick={() => handleEndorse(skill.id)}
-                  className={`btn btn-sm rounded-pill px-3 py-1 extra-small fw-bold d-flex align-items-center gap-1.5 transition ${
+                  className={`btn btn-sm rounded-pill px-3 py-1 extra-small fw-bold d-flex align-items-center gap-2 transition ${
                     skill.userEndorsed
                       ? 'bg-dark text-white border-dark'
                       : 'btn-white bg-white text-dark border shadow-sm'
