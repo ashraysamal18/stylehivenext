@@ -111,12 +111,12 @@ export default function Home() {
   const filterTabs = ['For You', 'Following', 'Trending', 'Jobs', 'Collaborations'];
 
   return (
-    <div className="container-fluid px-3 px-md-4 py-4" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
-      <div className="row g-4 justify-content-center">
+    <div className="container-fluid px-2 px-md-4 py-3 py-md-4" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+      <div className="row g-3 g-lg-4">
         
-        {/* LEFT SIDEBAR */}
-        <div className="col-12 col-lg-3" style={{ maxWidth: '300px' }}>
-          <div className="d-flex flex-column gap-3 sticky-top" style={{ top: '80px', zIndex: 10 }}>
+        {/* RESTORED LEFT SIDEBAR */}
+        <div className="col-lg-3 d-none d-lg-block">
+          <div className="d-flex flex-column gap-3 sticky-top" style={{ top: '20px', zIndex: 10 }}>
             
             {/* Profile Card */}
             <div className="card border-0 shadow-sm overflow-hidden rounded-4 bg-white">
@@ -154,34 +154,34 @@ export default function Home() {
             {/* Navigation Menu */}
             <div className="card border-0 shadow-sm p-3 rounded-4 bg-white">
               <h6 className="fw-bold text-uppercase text-muted mb-2 tracking-wide" style={{ fontSize: '0.7rem', letterSpacing: '0.05em' }}>MY STYLEHIVE</h6>
-              <div className="d-flex flex-column gap-1 fw-semibold" style={{ fontSize: '0.825rem' }}>
+              <div className="d-flex flex-column gap-1 fw-semibold" style={{ fontSize: '0.85rem' }}>
                 <Link href="/profile" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2 hover-bg">
                   <span>👤 My Profile</span>
                 </Link>
-                <Link href="/portfolio" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2">
+                <Link href="/portfolio" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2 hover-bg">
                   <span>🖼️ My Portfolio</span>
                 </Link>
-                <Link href="/saved" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2">
+                <Link href="/saved" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2 hover-bg">
                   <span>🔖 Saved Items</span>
                 </Link>
-                <Link href="/applications" className="text-dark text-decoration-none d-flex align-items-center justify-content-between py-2 px-2 rounded-2">
+                <Link href="/applications" className="text-dark text-decoration-none d-flex align-items-center justify-content-between py-2 px-2 rounded-2 hover-bg">
                   <span>💼 Applications</span>
                   <span className="badge bg-danger rounded-pill" style={{ fontSize: '0.65rem' }}>8</span>
                 </Link>
-                <Link href="/network" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2">
+                <Link href="/network" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2 hover-bg">
                   <span>👥 My Network</span>
                 </Link>
-                <Link href="/messages" className="text-dark text-decoration-none d-flex align-items-center justify-content-between py-2 px-2 rounded-2">
+                <Link href="/messages" className="text-dark text-decoration-none d-flex align-items-center justify-content-between py-2 px-2 rounded-2 hover-bg">
                   <span>💬 Messages</span>
                   <span className="badge bg-danger rounded-pill" style={{ fontSize: '0.65rem' }}>3</span>
                 </Link>
-                <Link href="/settings" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2">
+                <Link href="/settings" className="text-dark text-decoration-none d-flex align-items-center gap-2 py-2 px-2 rounded-2 hover-bg">
                   <span>⚙️ Settings</span>
                 </Link>
               </div>
             </div>
 
-            {/* Hire Top Talent Card */}
+            {/* Post Job Banner */}
             <div className="card border-0 shadow-sm p-3 rounded-4 text-center bg-white">
               <h6 className="fw-bold small mb-1">Hire top fashion talent</h6>
               <p className="text-muted mb-3" style={{ fontSize: '0.75rem' }}>Post a job and connect with verified professionals.</p>
@@ -198,48 +198,48 @@ export default function Home() {
         </div>
 
         {/* CENTER FEED */}
-        <div className="col-12 col-lg-6" style={{ maxWidth: '680px' }}>
+        <div className="col-12 col-lg-6">
           
           {/* Create Post Card */}
           <div className="card border-0 shadow-sm p-3 mb-3 rounded-4 bg-white">
-            <div className="d-flex gap-3 align-items-center mb-3">
+            <div className="d-flex gap-2 gap-md-3 align-items-center mb-3">
               <div 
                 className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0 shadow-sm"
-                style={{ width: '42px', height: '42px', backgroundColor: '#8C533C' }}
+                style={{ width: '40px', height: '40px', backgroundColor: '#8C533C' }}
               >
                 A
               </div>
               <button 
                 onClick={() => openModal('Post')} 
-                className="form-control form-control-sm rounded-pill bg-light border-0 text-start px-4 py-2.5 text-muted shadow-sm"
-                style={{ fontSize: '0.85rem' }}
+                className="form-control form-control-sm rounded-pill bg-light border-0 text-start px-3 px-md-4 py-2 text-muted shadow-sm text-truncate"
+                style={{ fontSize: '0.825rem' }}
               >
                 Share your latest work, thoughts or opportunities...
               </button>
             </div>
 
-            <div className="d-flex flex-wrap justify-content-between pt-2 border-top px-1">
-              <button onClick={() => openModal('Post')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
+            <div className="d-flex flex-nowrap overflow-x-auto gap-1 pt-2 border-top pb-1" style={{ scrollbarWidth: 'none' }}>
+              <button onClick={() => openModal('Post')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1 flex-shrink-0 px-2.5 py-1.5" style={{ fontSize: '0.75rem' }}>
                 📷 Photo
               </button>
-              <button onClick={() => openModal('Portfolio project')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
+              <button onClick={() => openModal('Portfolio project')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1 flex-shrink-0 px-2.5 py-1.5" style={{ fontSize: '0.75rem' }}>
                 🎨 Project
               </button>
-              <button onClick={() => openModal('Job opportunity')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
+              <button onClick={() => openModal('Job opportunity')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1 flex-shrink-0 px-2.5 py-1.5" style={{ fontSize: '0.75rem' }}>
                 💼 Job
               </button>
-              <button onClick={() => openModal('Collaboration request')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
+              <button onClick={() => openModal('Collaboration request')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1 flex-shrink-0 px-2.5 py-1.5" style={{ fontSize: '0.75rem' }}>
                 🤝 Collaboration
               </button>
-              <button onClick={() => openModal('Achievement')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
+              <button onClick={() => openModal('Achievement')} className="btn btn-sm btn-light border-0 rounded-pill fw-semibold text-secondary d-flex align-items-center gap-1 flex-shrink-0 px-2.5 py-1.5" style={{ fontSize: '0.75rem' }}>
                 ⭐ Achievement
               </button>
             </div>
           </div>
 
           {/* Feed Filter Navigation Tabs */}
-          <div className="bg-white rounded-4 shadow-sm px-4 pt-2 mb-4 border-0">
-            <div className="d-flex gap-4 overflow-auto text-nowrap" style={{ scrollbarWidth: 'none' }}>
+          <div className="bg-white rounded-4 shadow-sm px-3 pt-2 mb-3 border-0 sticky-top" style={{ top: '10px', zIndex: 9 }}>
+            <div className="d-flex gap-3 gap-md-4 overflow-x-auto text-nowrap" style={{ scrollbarWidth: 'none' }}>
               {filterTabs.map((tab) => (
                 <button
                   key={tab}
@@ -261,82 +261,77 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Feed Posts List */}
-          <div className="d-flex flex-column gap-4">
+          {/* Posts Feed */}
+          <div className="d-flex flex-column gap-3 gap-md-4">
             {filteredPosts.length > 0 ? (
               filteredPosts.map((post) => {
                 
-                {/* JOB OPPORTUNITY CARD */}
                 if (post.type === 'Job opportunity') {
                   return (
-                    <div key={post.id} className="card border-0 shadow-sm p-4 rounded-4 bg-white" style={{ backgroundColor: '#F8F9FF' }}>
+                    <div key={post.id} className="card border-0 shadow-sm p-3 p-md-4 rounded-4 bg-white">
                       <div className="d-flex justify-content-between align-items-start mb-3">
                         <div>
                           <span className="badge bg-light text-primary border extra-small fw-bold mb-2" style={{ fontSize: '0.7rem' }}>💼 FEATURED JOB</span>
-                          <h5 className="fw-bold mb-1 fs-5">{post.title}</h5>
-                          <p className="text-muted mb-1" style={{ fontSize: '0.8rem' }}>
+                          <h5 className="fw-bold mb-1 fs-6 fs-md-5">{post.title}</h5>
+                          <p className="text-muted mb-1" style={{ fontSize: '0.75rem' }}>
                             <strong>{post.author}</strong> ✔ • {post.time}
                           </p>
                         </div>
-                        <div className="bg-dark text-white p-3 rounded-3 d-flex align-items-center justify-content-center fw-bold fs-6" style={{ width: '64px', height: '64px' }}>
+                        <div className="bg-dark text-white p-2 p-md-3 rounded-3 d-flex align-items-center justify-content-center fw-bold fs-6 flex-shrink-0" style={{ width: '52px', height: '52px' }}>
                           VOGUE
                         </div>
                       </div>
 
-                      <div className="d-flex flex-wrap gap-2 mb-3">
-                        <span className="badge bg-white text-dark border px-3 py-2 rounded-pill" style={{ fontSize: '0.75rem' }}>{post.salary}</span>
-                        <span className="badge bg-white text-dark border px-3 py-2 rounded-pill" style={{ fontSize: '0.75rem' }}>{post.jobType}</span>
-                        <span className="badge bg-white text-dark border px-3 py-2 rounded-pill" style={{ fontSize: '0.75rem' }}>{post.experience}</span>
+                      <div className="d-flex flex-wrap gap-1.5 gap-md-2 mb-3">
+                        <span className="badge bg-white text-dark border px-2.5 py-1.5 rounded-pill" style={{ fontSize: '0.7rem' }}>{post.salary}</span>
+                        <span className="badge bg-white text-dark border px-2.5 py-1.5 rounded-pill" style={{ fontSize: '0.7rem' }}>{post.jobType}</span>
+                        <span className="badge bg-white text-dark border px-2.5 py-1.5 rounded-pill" style={{ fontSize: '0.7rem' }}>{post.experience}</span>
                       </div>
 
                       <div className="d-flex justify-content-between align-items-center border-top pt-3">
-                        <button className="btn btn-link text-dark text-decoration-none p-0 fw-bold" style={{ fontSize: '0.8rem' }}>View Job Details ∨</button>
-                        <button className="btn text-white rounded-pill btn-sm px-4 py-2 fw-bold" style={{ backgroundColor: '#8C533C', fontSize: '0.8rem' }}>Apply Now</button>
+                        <button className="btn btn-link text-dark text-decoration-none p-0 fw-bold" style={{ fontSize: '0.75rem' }}>Details ∨</button>
+                        <button className="btn text-white rounded-pill btn-sm px-3 px-md-4 py-1.5 fw-bold" style={{ backgroundColor: '#8C533C', fontSize: '0.75rem' }}>Apply Now</button>
                       </div>
                     </div>
                   );
                 }
 
-                {/* STANDARD & COLLABORATION POST */}
                 return (
-                  <div key={post.id} className={`card border-0 shadow-sm p-4 rounded-4 bg-white ${post.type === 'Collaboration request' ? 'bg-light' : ''}`}>
-                    {/* Post Header */}
+                  <div key={post.id} className={`card border-0 shadow-sm p-3 p-md-4 rounded-4 bg-white ${post.type === 'Collaboration request' ? 'bg-light' : ''}`}>
                     <div className="d-flex align-items-center justify-content-between mb-3">
-                      <div className="d-flex align-items-center gap-3">
+                      <div className="d-flex align-items-center gap-2 gap-md-3">
                         {post.avatar.startsWith('http') ? (
-                          <img src={post.avatar} alt={post.author} className="rounded-circle object-fit-cover shadow-sm" style={{ width: '44px', height: '44px' }} />
+                          <img src={post.avatar} alt={post.author} className="rounded-circle object-fit-cover shadow-sm flex-shrink-0" style={{ width: '40px', height: '40px' }} />
                         ) : (
                           <div 
-                            className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-sm"
-                            style={{ width: '44px', height: '44px', backgroundColor: '#8C533C' }}
+                            className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-sm flex-shrink-0"
+                            style={{ width: '40px', height: '40px', backgroundColor: '#8C533C' }}
                           >
                             {post.avatar}
                           </div>
                         )}
                         <div>
-                          <div className="d-flex align-items-center gap-1">
-                            <h6 className="fw-bold mb-0">{post.author}</h6>
+                          <div className="d-flex align-items-center gap-1 flex-wrap">
+                            <h6 className="fw-bold mb-0 text-truncate" style={{ fontSize: '0.9rem' }}>{post.author}</h6>
                             {post.verified && <span className="text-primary" style={{ fontSize: '0.75rem' }}>✔</span>}
                             {post.type === 'Collaboration request' && (
-                              <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 ms-2" style={{ fontSize: '0.65rem' }}>🤝 LOOKING FOR COLLABORATORS</span>
+                              <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style={{ fontSize: '0.6rem' }}>🤝 COLLAB</span>
                             )}
                           </div>
-                          <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>{post.role} • {post.time}</p>
+                          <p className="text-muted mb-0 text-truncate" style={{ fontSize: '0.7rem' }}>{post.role} • {post.time}</p>
                         </div>
                       </div>
                       <button className="btn btn-link text-muted p-0 border-0">•••</button>
                     </div>
 
-                    {/* Post Title / Content */}
                     {post.title && <h6 className="fw-bold mb-2">{post.title}</h6>}
-                    <p className="card-text small mb-3 text-secondary lh-sm">{post.content}</p>
+                    <p className="card-text small mb-3 text-secondary lh-sm" style={{ fontSize: '0.85rem' }}>{post.content}</p>
 
-                    {/* Image Grid Layout */}
                     {post.images && post.images.length > 1 && (
-                      <div className="row g-2 mb-3">
+                      <div className="row g-1.5 g-md-2 mb-3">
                         {post.images.map((img, idx) => (
                           <div className="col-4" key={idx}>
-                            <div className="rounded-3 overflow-hidden bg-light shadow-sm" style={{ height: '200px' }}>
+                            <div className="rounded-3 overflow-hidden bg-light shadow-sm" style={{ height: '140px' }}>
                               <img src={img} alt="Post media" className="w-100 h-100 object-fit-cover" />
                             </div>
                           </div>
@@ -345,21 +340,20 @@ export default function Home() {
                     )}
 
                     {post.images && post.images.length === 1 && (
-                      <div className="rounded-3 overflow-hidden mb-3 bg-light shadow-sm" style={{ maxHeight: '380px' }}>
+                      <div className="rounded-3 overflow-hidden mb-3 bg-light shadow-sm" style={{ maxHeight: '320px' }}>
                         <img src={post.images[0]} alt="Post media" className="img-fluid w-100 object-fit-cover" />
                       </div>
                     )}
 
-                    {/* Social Interaction Bar */}
-                    <div className="d-flex justify-content-between align-items-center border-top pt-3 text-muted fw-semibold" style={{ fontSize: '0.8rem' }}>
-                      <button className="btn btn-link text-muted text-decoration-none p-0 d-flex align-items-center gap-1" style={{ fontSize: '0.8rem' }}>
+                    <div className="d-flex justify-content-between align-items-center border-top pt-2.5 text-muted fw-semibold" style={{ fontSize: '0.75rem' }}>
+                      <button className="btn btn-link text-muted text-decoration-none p-0 d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
                         ❤️ {post.likes}
                       </button>
-                      <button className="btn btn-link text-muted text-decoration-none p-0 d-flex align-items-center gap-1" style={{ fontSize: '0.8rem' }}>
+                      <button className="btn btn-link text-muted text-decoration-none p-0 d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
                         💬 {post.comments}
                       </button>
-                      <button className="btn btn-link text-muted text-decoration-none p-0" style={{ fontSize: '0.8rem' }}>🔁 Share</button>
-                      <button className="btn btn-link text-muted text-decoration-none p-0" style={{ fontSize: '0.8rem' }}>🔖 Save</button>
+                      <button className="btn btn-link text-muted text-decoration-none p-0" style={{ fontSize: '0.75rem' }}>🔁 Share</button>
+                      <button className="btn btn-link text-muted text-decoration-none p-0" style={{ fontSize: '0.75rem' }}>🔖 Save</button>
                     </div>
                   </div>
                 );
@@ -372,9 +366,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* RIGHT SIDEBAR */}
-        <div className="col-12 col-lg-3" style={{ maxWidth: '320px' }}>
-          <div className="d-flex flex-column gap-3 sticky-top" style={{ top: '80px', zIndex: 10 }}>
+        {/* RESTORED RIGHT SIDEBAR */}
+        <div className="col-lg-3 d-none d-lg-block">
+          <div className="d-flex flex-column gap-3 sticky-top" style={{ top: '20px', zIndex: 10 }}>
             
             {/* Trending topics */}
             <div className="card border-0 shadow-sm p-3 rounded-4 bg-white">
@@ -399,10 +393,6 @@ export default function Home() {
                   <a href="#" className="fw-bold text-dark text-decoration-none d-block"># MumbaiCreatives</a>
                   <span className="text-muted" style={{ fontSize: '0.7rem' }}>5.3K posts</span>
                 </li>
-                <li>
-                  <a href="#" className="fw-bold text-dark text-decoration-none d-block"># RunwayLooks</a>
-                  <span className="text-muted" style={{ fontSize: '0.7rem' }}>4.2K posts</span>
-                </li>
               </ul>
             </div>
 
@@ -419,28 +409,6 @@ export default function Home() {
                     <div>
                       <p className="fw-bold mb-0" style={{ fontSize: '0.8rem' }}>Marcello V.</p>
                       <p className="text-muted mb-0" style={{ fontSize: '0.7rem' }}>Creative Director</p>
-                    </div>
-                  </div>
-                  <button className="btn btn-outline-dark btn-sm rounded-pill px-2 py-0.5 fw-bold" style={{ fontSize: '0.7rem' }}>+ Follow</button>
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center gap-2">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" className="rounded-circle object-fit-cover shadow-sm" style={{ width: '36px', height: '36px' }} alt="Priya" />
-                    <div>
-                      <p className="fw-bold mb-0" style={{ fontSize: '0.8rem' }}>Priya Sharma</p>
-                      <p className="text-muted mb-0" style={{ fontSize: '0.7rem' }}>Fashion Photographer</p>
-                    </div>
-                  </div>
-                  <button className="btn btn-outline-dark btn-sm rounded-pill px-2 py-0.5 fw-bold" style={{ fontSize: '0.7rem' }}>+ Follow</button>
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center gap-2">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" className="rounded-circle object-fit-cover shadow-sm" style={{ width: '36px', height: '36px' }} alt="Aanya" />
-                    <div>
-                      <p className="fw-bold mb-0" style={{ fontSize: '0.8rem' }}>Aanya Mehta</p>
-                      <p className="text-muted mb-0" style={{ fontSize: '0.7rem' }}>Fashion Designer</p>
                     </div>
                   </div>
                   <button className="btn btn-outline-dark btn-sm rounded-pill px-2 py-0.5 fw-bold" style={{ fontSize: '0.7rem' }}>+ Follow</button>
@@ -464,15 +432,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* StyleHive Journal */}
-            <div className="card border-0 shadow-sm overflow-hidden rounded-4">
-              <div className="position-relative p-3 text-white" style={{ background: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=400&q=80)', backgroundSize: 'cover', minHeight: '140px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                <h6 className="fw-bold small mb-1">StyleHive Journal</h6>
-                <p className="mb-2 opacity-75" style={{ fontSize: '0.75rem' }}>Fashion insights, career tips and industry stories.</p>
-                <Link href="/journal" className="text-white text-decoration-none fw-bold" style={{ fontSize: '0.75rem' }}>Read Latest Articles →</Link>
-              </div>
-            </div>
-
           </div>
         </div>
 
@@ -481,7 +440,7 @@ export default function Home() {
       {/* CREATE POST MODAL */}
       {isModalOpen && (
         <div className="modal show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1060 }}>
-          <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-dialog modal-dialog-centered px-2">
             <div className="modal-content border-0 shadow rounded-4 p-2">
               <div className="modal-header border-bottom-0 pb-0">
                 <h5 className="modal-title fs-6 fw-bold">Create a post</h5>
